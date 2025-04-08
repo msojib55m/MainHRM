@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Salary;
 
+
 class SalaryGenerate extends Controller
 {
   public function store(Request $request)
@@ -27,4 +28,6 @@ class SalaryGenerate extends Controller
   {
       return Salary::orderBy('id', 'desc')->get();
   }
+
+  
 }

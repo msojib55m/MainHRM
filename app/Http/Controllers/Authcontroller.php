@@ -83,12 +83,20 @@ class AuthController extends Controller
     }
 // Controller method
 
+
 // public function index()
 // {
 //     try {
-//         $data = DB::table('salaries')
-//             ->join('users', 'salaries.user_id', '=', 'users.id')
-//             ->select('users.name', 'salaries.salary_month', 'salaries.gross_salary')
+//         $data = DB::table('users')
+//             ->leftJoin('salaries', 'users.id', '=', 'salaries.user_id')
+//             ->select(
+//                 'users.id as user_id',
+//                 'users.name as user_name',
+             
+//                 'salaries.salary_month',
+//                 'salaries.gross_salary'
+//             )
+//             ->orderBy('users.id', 'asc') // সুন্দরভাবে সাজানো
 //             ->get();
 
 //         return response()->json($data);
@@ -96,22 +104,22 @@ class AuthController extends Controller
 //         \Log::error('Error fetching salary data: ' . $e->getMessage());
 //         return response()->json(['error' => 'Something went wrong'], 500);
 //     }
-   
 // }
+
+
 public function index()
 {
     try {
         $data = DB::table('users')
-            ->leftJoin('salaries', 'users.id', '=', 'salaries.user_id')
-            ->select(
-                'users.id as user_id',
-                'users.name as user_name',
-             
-                'salaries.salary_month',
-                'salaries.gross_salary'
-            )
-            ->orderBy('users.id', 'asc') // সুন্দরভাবে সাজানো
-            ->get();
+        ->leftJoin('salaries', 'users.id', '=', 'salaries.user_id')
+        ->select(
+            'users.id as user_id',   // 'users.id' নিশ্চিত করুন এখানে 'user_id' পাঠানো হচ্ছে
+            'users.name as user_name',
+            'salaries.salary_month',
+            'salaries.gross_salary'
+        )
+        ->orderBy('users.id', 'asc')
+        ->get();
 
         return response()->json($data);
     } catch (\Exception $e) {
@@ -119,7 +127,6 @@ public function index()
         return response()->json(['error' => 'Something went wrong'], 500);
     }
 }
-
 
 
 

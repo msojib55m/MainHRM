@@ -162,3 +162,5 @@ use App\Http\Controllers\SalaryGenerate;
 
 Route::post('/salaries', [SalaryGenerate::class, 'store']);
 Route::get('/salaries', [SalaryGenerate::class, 'index']);
+
+

@@ -10,7 +10,10 @@ import {
     faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import { jsPDF } from "jspdf";
+import Papa from "papaparse";
+import * as XLSX from "xlsx";
+
 const ManageEmployeeSalaryOne = () => {
     const [openFilter, setFilter] = useState(false);
 
@@ -22,6 +25,105 @@ const ManageEmployeeSalaryOne = () => {
             .then((data) => setUsers(data))
             .catch((err) => console.error("Error:", err));
     }, []);
+    // copy now
+    const handleCopyTable = () => {
+        // হেডার
+        let tableText = "SL\tEmployee Name\tSalary Month\tTotal Salary\n";
+
+        // সব ইউজার লুপ করে ডেটা যুক্ত করা
+        users.forEach((user, index) => {
+            tableText += `${index + 1}\t${user.user_name}\t${
+                user.salary_month ?? "N/A"
+            }\t${user.gross_salary ?? "N/A"}\n`;
+        });
+
+        // কপি করা
+        navigator.clipboard
+            .writeText(tableText)
+            .then(() => alert(" Table copied!"))
+            .catch((err) => {
+                console.error("❌ কপি সমস্যা:", err);
+                alert("❌ টেবিল কপি করতে সমস্যা হয়েছে");
+            });
+    };
+    // CSV Download now
+    const handleDownloadCSV = () => {
+        const csvData = users.map((user, index) => ({
+            SL: index + 1,
+            "Employee Name": user.user_name,
+            "Salary Month": user.salary_month ?? "N/A",
+            "Total Salary": user.gross_salary ?? "N/A",
+        }));
+
+        const csv = Papa.unparse(csvData);
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "salary_table.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    // Excel now
+    const handleDownloadExcel = () => {
+        const excelData = users.map((user, index) => ({
+            SL: index + 1,
+            "Employee Name": user.user_name,
+            "Salary Month": user.salary_month ?? "N/A",
+            "Total Salary": user.gross_salary ?? "N/A",
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Salary Sheet");
+
+        XLSX.writeFile(workbook, "salary_table.xlsx");
+    };
+    const handlePDFDownload = () => {
+        const doc = new jsPDF();
+
+        const tableColumn = [
+            "SL",
+            "Employee Name",
+            "Salary Month",
+            "Total Salary",
+        ];
+        const tableRows = [];
+
+        users.forEach((user, index) => {
+            const rowData = [
+                index + 1,
+                user.user_name,
+                user.salary_month ?? "N/A",
+                user.gross_salary ?? "N/A",
+            ];
+            tableRows.push(rowData);
+        });
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20,
+            styles: { font: "helvetica", fontSize: 10 },
+        });
+
+        doc.save("employee_salary_table.pdf");
+    };
+
+    // Downloa now file 1 by one
+    const handleDownloadPayslip = (user) => {
+        const doc = new jsPDF();
+
+        // Example of adding content to PDF (you can customize it)
+        doc.text(`Payslip for ${user.user_name}`, 10, 10);
+        doc.text(`Salary Month: ${user.salary_month}`, 10, 20);
+        doc.text(`Gross Salary: ${user.gross_salary}`, 10, 30);
+
+        // Save the generated PDF
+        doc.save(`payslip_${user.user_name}.pdf`);
+    };
 
     return (
         <div>
@@ -102,25 +204,37 @@ const ManageEmployeeSalaryOne = () => {
                             </label>
                         </div>
                         <div className="bg-blue-500 text-white py-2 px-4 rounded-sm flex">
-                            <button className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            <button
+                                className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                onClick={handleCopyTable}
+                            >
                                 <div>
                                     <FontAwesomeIcon icon={faCopy} />
                                 </div>
                                 Copy
                             </button>
-                            <button className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            <button
+                                className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                onClick={handleDownloadCSV}
+                            >
                                 <div>
                                     <FontAwesomeIcon icon={faFileCsv} />
                                 </div>
                                 CSV
                             </button>
-                            <button className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            <button
+                                className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                onClick={handleDownloadExcel}
+                            >
                                 Excel
                                 <div>
                                     <FontAwesomeIcon icon={faFileExcel} />
                                 </div>
                             </button>
-                            <button className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            <button
+                                className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                onClick={handlePDFDownload}
+                            >
                                 <div>
                                     <FontAwesomeIcon icon={faFilePdf} />
                                 </div>
@@ -195,24 +309,27 @@ const ManageEmployeeSalaryOne = () => {
                                         <div className="">
                                             <button
                                                 type="button"
-                                                className="px-4 h-[40px] py-2 bg-yellow-400 text-black rounded-md hover:bg-yellow-500 ml-2"
+                                                className="px-4 h-[40px] py-2 bg-yellow-400 text-black rounded-md hover:bg-yellow-500 ml-2 flex items-center"
                                             >
-                                                Payslip
+                                                <h6>Payslip</h6>
                                                 <FontAwesomeIcon
                                                     icon={faEye}
-                                                    className="ml-[10px]"
+                                                    className="ml-[10px] mt-[8px]"
                                                 />
                                             </button>
                                         </div>
                                         <div>
                                             <button
                                                 type="button"
-                                                className="px-4 h-[40px] py-2 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
+                                                className="px-4 h-[40px] py-2 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2 flex"
+                                                onClick={() =>
+                                                    handleDownloadPayslip(user)
+                                                }
                                             >
                                                 Download pay slip
                                                 <FontAwesomeIcon
                                                     icon={faDownload}
-                                                    className="ml-[10px]"
+                                                    className="ml-[10px] mt-[6px]"
                                                 />
                                             </button>
                                         </div>

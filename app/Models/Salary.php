@@ -17,5 +17,9 @@ class Salary extends Model
         'net_salary',
         'loans',
     ];
+    public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
     
 }
