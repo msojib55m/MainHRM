@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.dotted
+{
+    @apply w-[5px] h-[5px] bg-[green] rounded-[50%]
+}
+
+
+/* 50px in media query */
+@screen xs {
+    .CacheClear {
+        /* @apply hidden; */
+    }
+
+    .CacheClearMenu {
+        @apply block;
+    }
+    .box {
+        @apply hidden;
+    }
+    .Admin {
+        @apply hidden;
+    }
+    .Zoom {
+        @apply hidden;
+    }
+    .nabarWidth {
+        @apply w-[120px];
+    }
+    /* .NabarSlidbar
+  {
+    @apply absolute left-[-200px] w-0 h-0 top-0;
+  } */
+}
+
+/* 768px in media query */
+@screen md {
+    .CacheClear {
+        @apply block flex items-center;
+    }
+    .nav {
+        /* @apply hidden; */
+    }
+    .CacheClearMenu {
+        @apply block;
+    }
+    .nabarWidth {
+        @apply w-[200px];
+    }
+    .Zoom {
+        @apply block flex items-center;
+    }
+  
+}
+
+/* 1024px @media quers */
+@screen lg {
+    .Admin {
+        @apply block;
+    }
+
+}
+
+/* 1280px in media query */
+
+@screen xl {
+    .CacheClear {
+        @apply block flex items-center;
+    }
+    .CacheClearMenu {
+        @apply hidden;
+    }
+    .box {
+        @apply block;
+    }
+    .Admin {
+        @apply block;
+    }
+    .nav {
+        @apply block;
+    }
+
+}
+@screen xxl1
+{
+    .CacheClearMenu {
+        @apply hidden;
+    }
+}
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+ /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+}
+}
+.scrollable-container {
+    max-height: 330px; /* Viewport-এর ৮০% উচ্চতা */
+    overflow-y: auto; /* কন্টেন্ট বেশি হলে স্ক্রলবার আসবে */
+}

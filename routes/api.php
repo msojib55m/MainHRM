@@ -1,0 +1,164 @@
+<?php
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\DepartmentController;
+use App\Models\Department;
+use App\Http\Controllers\SubDepartmentController;
+use App\Http\Controllers\PositionController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('logout', [AuthController::class, 'logout']);
+    //users
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    // try
+    Route::get('/get', function (Request $request) {
+        return $request->user();
+    });
+    // Route::apiResource('/users',UserController::class);
+
+});
+
+
+
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+
+
+
+Route::post('/attendance', [AttendanceController::class, 'store']);
+
+
+
+Route::post('/upload', [FileUploadController::class, 'upload']);
+
+
+
+// Department start
+// Department Store Post database now
+Route::post('/departments', [DepartmentController::class, 'store']);
+// Department Store Post database now
+Route::get('/departments', [DepartmentController::class, 'index']);
+// Department update now
+Route::put('/department/{id}', [DepartmentController::class, 'update']);
+// department delete
+Route::delete('/departmentsDelete/{id}', [DepartmentController::class, 'destroy']);
+// Department End
+
+
+
+// subDepartment start
+
+// mysql data send 
+Route::post('/subdepartments', [SubDepartmentController::class, 'store']);
+// mysql data send 
+// mysql data get
+Route::get('/subdepartments', [SubDepartmentController::class, 'index']);
+// mysql data get
+
+Route::put('/subdepartments/{id}', [SubDepartmentController::class, 'update']);
+Route::delete('/subdepartments/{id}', [SubDepartmentController::class, 'destroy']);
+// subDepartment Ends
+
+
+// Main EmployeePosition 
+Route::post('/positions', [PositionController::class, 'store']);
+Route::get('/positions', [PositionController::class, 'index']);
+Route::put('/positions/{id}', [PositionController::class, 'update']);
+Route::delete('positions/{id}', [PositionController::class, 'destroy']);
+// Main EmployeePosition 
+use App\Http\Controllers\EmployeePerformanceController;
+
+Route::post('/EmployeePerformanceOne', [EmployeePerformanceController::class, 'store']);
+Route::get('/EmployeesPerformanceTwo', [EmployeePerformanceController::class, 'index']);
+Route::put('/update-performance/{id}', [EmployeePerformanceController::class, 'update']);
+
+// routes/api.php
+Route::delete('delete-performance/{id}', [EmployeePerformanceController::class, 'destroy']);
+
+
+// holiday send post
+use App\Http\Controllers\HolidayController;
+
+Route::post('holidays', [HolidayController::class, 'store']);
+//  mysql থেকে ডাটা আনা হচ্ছে
+Route::get('/holidays', [HolidayController::class, 'index']);
+//এখন ডাটা আপডেট করা হচ্ছে
+Route::put('/holidaysUpdata/{id}', [HolidayController::class, 'update']);
+//  mysql থেকে ডাটা আনা হচ্ছে এবং ডিলেক্ট করব
+Route::delete('/holidaysDelete/{id}', [HolidayController::class, 'destroy']);
+
+
+// leave Type Holiday Now
+// Controllers নাম
+use App\Http\Controllers\LeaveTypeHolidayController;
+
+// //  mysql থেকে ডাটা পাঠানো হচ্ছে
+Route::post('/Leave-Type-Holiday', [LeaveTypeHolidayController::class, 'store']);
+//mysql ডাটা আনা হচ্ছে
+Route::get('/Leave-Type-Holiday-Show', [LeaveTypeHolidayController::class, 'index']);
+Route::put('/leave-Type-Holiday-ShowNow/{id}', [LeaveTypeHolidayController::class, 'update']);
+// delete now
+Route::delete('/leave-Type-Holiday-ShowNow/{id}', [LeaveTypeHolidayController::class, 'destroy']);
+
+
+// Leave Application controller
+use App\Http\Controllers\LeaveApplicationController;
+Route::post('/leave-applications', [LeaveApplicationController::class, 'store']);
+Route::get('/leave-applications', [LeaveApplicationController::class, 'index']);
+Route::delete('/leave-applications/{id}', [LeaveApplicationController::class, 'destroy']);
+Route::get('/employees', [AuthController::class, 'getEmployees']);
+Route::get('/employeesAdd', [AuthController::class, 'getEmployeesAdd']);
+Route::get('/employeesAddTwo', [AuthController::class, 'getEmployeesAddTwo']);
+// new
+Route::get('/employeesId', [AuthController::class, 'EmployessId']);
+// route 
+Route::get('/salariesName', [AuthController::class, 'index']);
+
+
+
+// loan start
+// routes/api.php
+use App\Http\Controllers\LoanController;
+
+Route::post('/submit-loan', [LoanController::class, 'submitLoan']);
+Route::get('/loans', [LoanController::class, 'getLoans']);
+Route::put('/loans/{id}', [LoanController::class, 'update']);
+Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
+
+// Notice controller 
+use App\Http\Controllers\NoticeController;
+
+Route::post('/notices', [NoticeController::class, 'store'])->middleware('cors');
+Route::get('/notices', [NoticeController::class, 'index']);
+
+// edit now
+Route::put('/notices/{id}', [NoticeController::class, 'update']);
+// delete now
+Route::delete('/notices/{id}', [NoticeController::class, 'destroy']);
+// ুsalary 
+use App\Http\Controllers\EmployeeController;
+Route::post('/salary-advance', [EmployeeController::class, 'store']);
+Route::get('/salary-advanceNow', [EmployeeController::class, 'index']);
+Route::put('/salary-advanceGood/{id}', [EmployeeController::class, 'update']);
+Route::delete('/salary-advanceDelete/{id}', [EmployeeController::class, 'destroy']);
+// 
+use App\Http\Controllers\SalaryGenerate;
+
+Route::post('/salaries', [SalaryGenerate::class, 'store']);
+Route::get('/salaries', [SalaryGenerate::class, 'index']);
