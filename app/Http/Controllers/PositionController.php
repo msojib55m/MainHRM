@@ -54,4 +54,10 @@ class PositionController extends Controller
         $position->delete();
         return response()->json(['message' => 'Position deleted successfully']);
     }
+    public function IndexOne()
+    {
+        // শুধু position name আনবে
+        $positions = Position::pluck('position_name');
+        return response()->json($positions);
+    }
 }

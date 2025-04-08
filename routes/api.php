@@ -81,6 +81,7 @@ Route::post('/positions', [PositionController::class, 'store']);
 Route::get('/positions', [PositionController::class, 'index']);
 Route::put('/positions/{id}', [PositionController::class, 'update']);
 Route::delete('positions/{id}', [PositionController::class, 'destroy']);
+Route::get('/positionsOne', [PositionController::class, 'IndexOne']);
 // Main EmployeePosition 
 use App\Http\Controllers\EmployeePerformanceController;
 

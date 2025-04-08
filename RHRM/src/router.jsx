@@ -37,6 +37,7 @@ const SalaryGenerate = lazy(() => import("./views/SalaryGenerate.jsx"));
 const ManageEmployeeSalary = lazy(() =>
     import("./views/ManageEmployeeSalary.jsx")
 );
+const ProcurementRequest = lazy(() => import("./views/ProcurementRequest.jsx"));
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -423,6 +424,23 @@ const router = createBrowserRouter([
         ],
     },
     // Salary Ends
+    // ProcurementRequest
+    {
+        path: "/procurement_request",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/procurement_request",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <ProcurementRequest />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
     // login not allword
     {
         path: "/",
