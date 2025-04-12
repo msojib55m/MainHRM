@@ -174,14 +174,24 @@ const Heder = () => {
             icon1: faCreditCard,
             name: "Loan",
             icon2: faChevronLeft,
-            links: [{ label: "Loan list", path: "/loan/list" }],
+            links: [
+                { label: "Loan list", path: "/loan/list" },
+                {
+                    label: "Loan disburse report",
+                    path: "/loans-report-loan_disburse_report",
+                },
+                {
+                    label: "Employee wise loan",
+                    path: "/loans-report/employee",
+                },
+            ],
         },
         {
             id: 7,
             icon1: faBell,
             name: "Notice board",
             icon2: faChevronLeft,
-            links: [{ label: "Notic", path: "/leave/weekly-holiday" }],
+            links: [{ label: "Notic", path: "/notice/notices" }],
         },
         {
             id: 8,
@@ -189,9 +199,12 @@ const Heder = () => {
             name: "Payroll",
             icon2: faChevronLeft,
             links: [
-                { label: "Salary advance", path: "/loan/list" },
-                { label: "Salary generate", path: "/loan/list" },
-                { label: "Manage employee salary", path: "/loan/list" },
+                { label: "Salary advance", path: "/payroll/salary-advance" },
+                { label: "Salary generate", path: "/payroll/salary-generate" },
+                {
+                    label: "Manage employee salary",
+                    path: "/payroll/manage-salaries",
+                },
             ],
         },
         {
@@ -200,14 +213,14 @@ const Heder = () => {
             name: "Procurement",
             icon2: faChevronLeft,
             links: [
-                { label: "Request", path: "/loan/list" },
-                { label: "Quotation", path: "/loan/list" },
-                { label: "Bid analysis", path: "/loan/list" },
-                { label: "Purchase order", path: "/loan/list" },
-                { label: "Goods received", path: "/loan/list" },
-                { label: "Vendors", path: "/loan/list" },
-                { label: "Committess", path: "/loan/list" },
-                { label: "Units", path: "/loan/list" },
+                { label: "Request", path: "/procurement_request" },
+                { label: "Quotation", path: "/hr/quotation" },
+                { label: "Bid analysis", path: "/hr/bid" },
+                { label: "Purchase order", path: "/hr/purchase" },
+                { label: "Goods received", path: "/hr/goods" },
+                { label: "Vendors", path: "/hr/vendor" },
+                { label: "Committess", path: "/hr/committee" },
+                { label: "Units", path: "/hr/units" },
             ],
         },
         {
@@ -216,11 +229,11 @@ const Heder = () => {
             name: "Project management",
             icon2: faChevronLeft,
             links: [
-                { label: "Clients", path: "/loan/list" },
-                { label: "Projects", path: "/loan/list" },
-                { label: "Manage tasks", path: "/loan/list" },
-                { label: "Reports", path: "/loan/list" },
-                { label: "Team members", path: "/loan/list" },
+                { label: "Clients", path: "/project/clients" },
+                { label: "Projects", path: "/project/projects" },
+                { label: "Manage tasks", path: "/project/manage_tasks" },
+                { label: "Reports", path: "/project/reports" },
+                { label: "Team members", path: "/project/team_member_search" },
             ],
         },
         {
@@ -229,10 +242,10 @@ const Heder = () => {
             name: "Recruitment",
             icon2: faChevronLeft,
             links: [
-                { label: "Candidate list", path: "/loan/list" },
-                { label: "Candidate shortlist", path: "/loan/list" },
-                { label: "Interview", path: "/loan/list" },
-                { label: "Candidate selection", path: "/loan/list" },
+                { label: "Candidate list", path: "/hr/recruitment" },
+                { label: "Candidate shortlist", path: "/hr/shortlist" },
+                { label: "Interview", path: "/hr/interview" },
+                { label: "Candidate selection", path: "/hr/selection" },
             ],
         },
         {
@@ -241,11 +254,14 @@ const Heder = () => {
             name: "Reports",
             icon2: faChevronLeft,
             links: [
-                { label: "Attendance report", path: "/loan/list" },
-                { label: "Leave report", path: "/loan/list" },
-                { label: "Employee reports", path: "/loan/list" },
-                { label: "Payroll", path: "/loan/list" },
-                { label: "Adhoc report", path: "/loan/list" },
+                {
+                    label: "Attendance report",
+                    path: "/hr/reports/daily-present",
+                },
+                { label: "Leave report", path: "/hr/reports/leave" },
+                { label: "Employee reports", path: "/hr/reports/employee" },
+                { label: "Payroll", path: "/hr/reports/payroll" },
+                { label: "Adhoc report", path: "/hr/reports/adhoc-advance" },
             ],
         },
         {
@@ -254,12 +270,21 @@ const Heder = () => {
             name: "Reward points",
             icon2: faChevronLeft,
             links: [
-                { label: "Point settings", path: "/loan/list" },
-                { label: "Point categories", path: "/loan/list" },
-                { label: "Management points", path: "/loan/list" },
-                { label: "Collaborative points", path: "/loan/list" },
-                { label: "Attendance points", path: "/loan/list" },
-                { label: "Employee points", path: "/loan/list" },
+                { label: "Point settings", path: "/reward/point-settings" },
+                { label: "Point categories", path: "/reward/point-categories" },
+                {
+                    label: "Management points",
+                    path: "/reward/management-points",
+                },
+                {
+                    label: "Collaborative points",
+                    path: "/reward/collaborative-points",
+                },
+                {
+                    label: "Attendance points",
+                    path: "/reward/attendance-points",
+                },
+                { label: "Employee points", path: "/reward/employee-points" },
             ],
         },
         {
@@ -267,14 +292,14 @@ const Heder = () => {
             icon1: faMessage,
             name: "Setup Rules",
             icon2: faChevronLeft,
-            links: [{ label: "Rules", path: "/loan/list" }],
+            links: [{ label: "Rules", path: "/hr/setup-rules" }],
         },
         {
             id: 15,
             icon1: faGear,
             name: "Settings",
             icon2: faChevronLeft,
-            links: [],
+            links: [{ label: "", path: "/applications" }],
         },
         {
             id: 16,
@@ -282,9 +307,9 @@ const Heder = () => {
             name: "Message",
             icon2: faChevronLeft,
             links: [
-                { label: "New", path: "/loan/list" },
-                { label: "Inbox", path: "/loan/list" },
-                { label: "Sent", path: "/loan/list" },
+                { label: "New", path: "/message/new" },
+                { label: "Inbox", path: "/message/new" },
+                { label: "Sent", path: "/message/sent" },
             ],
         },
     ];

@@ -4,4 +4,5 @@ npm install xlsx //excel install
 npm install papaparse //CSV
 npm install jspdf//pdf download
 
+npm install react-select
 

@@ -1,15 +1,3 @@
-// import React from 'react';
-
-// const SalaryGenerate = () => {
-//   return (
-//     <div>
-
-//     </div>
-//   );
-// }
-
-// export default SalaryGenerate;
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";

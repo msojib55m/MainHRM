@@ -164,4 +164,9 @@ use App\Http\Controllers\SalaryGenerate;
 Route::post('/salaries', [SalaryGenerate::class, 'store']);
 Route::get('/salaries', [SalaryGenerate::class, 'index']);
 
+// Procurement Request 
+use App\Http\Controllers\ProcurementRequestController;
 
+Route::post('/requests', [ProcurementRequestController::class, 'store']);
+
+Route::get('/Request-data', [ProcurementRequestController::class, 'index']);

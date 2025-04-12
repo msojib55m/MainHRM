@@ -121,7 +121,7 @@ const EmployeeParformanceOne = () => {
         "Ch. Monalisa Subudhi",
     ]);
     useEffect(() => {
-        fetch("http://localhost:8000/api/employees")
+        fetch("http://127.0.0.1:8000/api/employees")
             .then((res) => res.json())
             .then((data) => setEmployees(data))
             .catch((error) =>
@@ -151,7 +151,7 @@ const EmployeeParformanceOne = () => {
 
         try {
             const response = await fetch(
-                "http://localhost:8000/api/EmployeePerformanceOne",
+                "http://127.0.0.1:8000/api/EmployeePerformanceOne",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

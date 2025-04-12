@@ -7,6 +7,9 @@ import {
     faCirclePlus,
     faEdit,
     faTrash,
+    faPlusSquare,
+    faFileCsv,
+    faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
@@ -52,8 +55,14 @@ const Request = () => {
             employee.toLowerCase().includes(search.toLowerCase())
     );
     // 2nd now
+    // new
     const dropdownRefOne = useRef(null);
-
+    const [startDate, setStartDate] = useState("");
+    const [description1, setDescription1] = useState("");
+    const [description2, setDescription2] = useState("");
+    const [amount, setAmount] = useState("");
+    const [endDate, setEndDate] = useState("");
+    // new
     const [positions, setPositions] = useState([]);
     const [filteredPositions, setFilteredPositions] = useState([]);
     const [searchOne, setSearchOne] = useState("");
@@ -96,7 +105,72 @@ const Request = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+    // textArya color green now
+    const [isFocused, setIsFocused] = useState(false);
+    const [isFocusedNow, setIsFocusedNow] = useState(false);
+    // selected
+    const unitOptions = [
+        { value: "kg", label: "KG" },
+        { value: "litre", label: "Litre" },
+        { value: "piece", label: "Piece" },
+        { value: "meter", label: "Meter" },
+        { value: "dozen", label: "Dozen" },
+        { value: "gram", label: "Gram" },
+        { value: "ml", label: "Millilitre" },
+        { value: "pack", label: "Pack" },
+    ];
 
+    const [selectedUnit, setSelectedUnit] = useState(null);
+
+    // এখন ডাটা react.jsx থেকে ল্যারাবেল পাঠানো হলো
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!selectedUnit) {
+            alert("Please select a unit.");
+            return;
+        }
+        const formData = {
+            employee: selectedEmployee,
+            position: selectedPosition,
+            start_date: startDate,
+            end_date: endDate,
+            description1,
+            description2,
+            unit_id: selectedUnit.value,
+            amount: parseFloat(amount),
+        };
+        console.log("Submitting form data:", formData);
+        try {
+            await axios.post("http://127.0.0.1:8000/api/requests", formData);
+            alert("Form submitted successfully!");
+            setSelectedEmployee("");
+            setSelectedPosition("");
+            setStartDate("");
+            setEndDate("");
+            setDescription1("");
+            setDescription2("");
+            setSelectedUnit(null);
+            setAmount("");
+            setRequest(false);
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
+    };
+    // data state
+    const [data, setData] = useState([]);
+    const [loadingTable, setLoadingTable] = useState(true);
+    useEffect(() => {
+        axios
+            .get("http://127.0.0.1:8000/api/Request-data")
+            .then((response) => {
+                setData(response.data);
+                setLoadingTable(false);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+                setLoadingTable(false);
+            });
+    }, []);
     return (
         <div>
             <div class="p-4  bg-white rounded-lg h-[auto] w-[auto] mt-[20px] ">
@@ -114,7 +188,174 @@ const Request = () => {
                         </button>
                     </div>
                 </div>
+                {/* show page */}
+                <div class="mt-[20px]">
+                    <div class="flex justify-between items-center ">
+                        <div className="mt-[20px]  ">
+                            <label className="text-sm font-medium text-[20px]">
+                                Show
+                                <select
+                                    name="entries"
+                                    className=" p-2 border border-gray-300 rounded-md 
+                                                        focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 
+                                                        appearance-none h-[40px] ml-[10px] mr-[10px]"
+                                >
+                                    <option value="10" selected>
+                                        10
+                                    </option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="75">75</option>
+                                    <option value="100">100</option>
+                                </select>
+                                entries
+                            </label>
+                        </div>
+                        <div className="bg-blue-500 text-white py-2 px-4 rounded-sm flex">
+                            <button className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                                <div>
+                                    <FontAwesomeIcon icon={faFileCsv} />
+                                </div>
+                                CSV
+                            </button>
+                            <button className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                                Excel
+                                <div>
+                                    <FontAwesomeIcon icon={faFileExcel} />
+                                </div>
+                            </button>
+                        </div>
+                        <div class="mr-[10px] mt-[20px] w-[362px]">
+                            <div class="flex items-center justify-between w-[250px]">
+                                <div>
+                                    <label class="text-sm font-medium text-[20px]">
+                                        Search:
+                                    </label>
+                                </div>
+                                <div className="">
+                                    <input
+                                        type="text"
+                                        class="w-[300px] ml-[20px] h-[40px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        placeholder="Search..."
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/* show page */}
+                {/* table now */}
+                <div className="mt-[20px]">
+                    <hr />
+                </div>
+                <div class="mt-[20px]">
+                    <table class="min-w-full table-auto border-collapse">
+                        <thead class="text-left">
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2">
+                                    SL
+                                </th>
+                                <th class="border border-gray-300 px-4 py-2">
+                                    Requesting person
+                                </th>
+                                <th class="border border-gray-300 px-4 py-2">
+                                    Requesting person
+                                </th>
+
+                                <th class="border border-gray-300 px-4 py-2">
+                                    Date
+                                </th>
+                                <th class="border border-gray-300 px-4 py-2">
+                                    Quote status
+                                </th>
+                                <th class="border border-gray-300 px-4 py-2">
+                                    action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loadingTable ? (
+                                <tr>
+                                    <td
+                                        colSpan="6"
+                                        className="text-center py-4"
+                                    >
+                                        <div className="flex items-center justify-center space-x-2 text-gray-500">
+                                            <svg
+                                                className="animate-spin h-5 w-5"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v8z"
+                                                ></path>
+                                            </svg>
+                                            <span>Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : data.length === 0 ? (
+                                <tr>
+                                    <td
+                                        colSpan="6"
+                                        className="text-center py-4"
+                                    >
+                                        No data found
+                                    </td>
+                                </tr>
+                            ) : (
+                                data.map((item, index) => (
+                                    <tr
+                                        key={index}
+                                        className="hover:bg-gray-50"
+                                    >
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            {index + 1}
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            {item.employee}
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            {item.position}
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            {item.end_date}
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            {item.amount}
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2 text-left">
+                                            <button className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1">
+                                                <FontAwesomeIcon
+                                                    icon={faEdit}
+                                                />
+                                            </button>
+                                            <button className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1">
+                                                <FontAwesomeIcon
+                                                    icon={faTrash}
+                                                />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                {/* table */}
             </div>
+
             {openRequest && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     {/* Background Overlay */}
@@ -126,7 +367,7 @@ const Request = () => {
                         <hr className="border-t-1 border-gray-300 mt-2" />
 
                         {/* Input Fields */}
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <div className="mt-4 ">
                                 <div className="flex flex-col items-center mt-10 max-w-[1200px] mx-auto gap-6">
                                     {/* First Row: Employee Dropdown & Department Dropdown */}
@@ -293,6 +534,13 @@ const Request = () => {
                                             <input
                                                 type="date"
                                                 className="w-full h-10 px-3 py-1 text-gray-700 border border-gray-300 rounded-lg focus:outline-none"
+                                                onFocus={(e) => {
+                                                    e.target.showPicker();
+                                                }}
+                                                value={startDate}
+                                                onChange={(e) =>
+                                                    setStartDate(e.target.value)
+                                                }
                                             />
                                         </div>
 
@@ -307,16 +555,185 @@ const Request = () => {
                                             <input
                                                 type="date"
                                                 className="w-full h-10 px-3 py-1 text-gray-700 border border-gray-300 rounded-lg focus:outline-none"
+                                                onFocus={(e) => {
+                                                    e.target.showPicker();
+                                                }}
+                                                value={endDate}
+                                                onChange={(e) =>
+                                                    setEndDate(e.target.value)
+                                                }
                                             />
                                         </div>
                                     </div>
                                 </div>
+                                <div className="mt-[20px]">
+                                    <div className=" flex">
+                                        <div className="w-[145px]">
+                                            <h6>Reason for requesting *</h6>
+                                        </div>
+                                        <textarea
+                                            rows={3}
+                                            value={description1}
+                                            onChange={(e) =>
+                                                setDescription1(e.target.value)
+                                            }
+                                            className={`w-[400px] px-3 py-2 border rounded-lg transition-all duration-200
+                                               ${
+                                                   isFocused
+                                                       ? "border-green-500 outline-green-500"
+                                                       : "border-gray-300"
+                                               }`}
+                                            placeholder="Description of materials /Goods /Service "
+                                            onFocus={() => setIsFocused(true)}
+                                            onBlur={() => setIsFocused(false)}
+                                        ></textarea>
+                                    </div>
+                                </div>
 
-                                {/* active selected start */}
+                                {/* table add now */}
+                                <div className="mt-[20px]">
+                                    <table className="min-w-full border border-gray-300 text-left">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="px-4 py-2 border">
+                                                    Description of materials
+                                                    /Goods /Service *
+                                                </th>
+                                                <th className="px-4 py-2 border">
+                                                    Unit *
+                                                </th>
+                                                <th className="px-4 py-2 border">
+                                                    Quantity *
+                                                </th>
+                                                <th className="px-4 py-2 border">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr className="hover:bg-gray-50">
+                                                <td className="px-4 py-2 border">
+                                                    <textarea
+                                                        rows={3}
+                                                        className={`w-[400px] px-3 py-2 border rounded-lg transition-all duration-200
+                                               ${
+                                                   isFocusedNow
+                                                       ? "border-green-500 outline-green-500"
+                                                       : "border-gray-300"
+                                               }`}
+                                                        placeholder=" Description of materia Goods /Service"
+                                                        onFocus={() =>
+                                                            setIsFocusedNow(
+                                                                true
+                                                            )
+                                                        }
+                                                        onBlur={() =>
+                                                            setIsFocusedNow(
+                                                                false
+                                                            )
+                                                        }
+                                                        value={description2}
+                                                        onChange={(e) =>
+                                                            setDescription2(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    ></textarea>
+                                                </td>
+
+                                                <td className="w-1/5 px-2 py-2">
+                                                    <select
+                                                        value={
+                                                            selectedUnit?.value ||
+                                                            ""
+                                                        }
+                                                        onChange={(e) => {
+                                                            const selected =
+                                                                unitOptions.find(
+                                                                    (option) =>
+                                                                        option.value ===
+                                                                        e.target
+                                                                            .value
+                                                                );
+                                                            setSelectedUnit(
+                                                                selected
+                                                            );
+                                                        }}
+                                                        className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md"
+                                                        required
+                                                    >
+                                                        <option value="">
+                                                            Select Unit
+                                                        </option>
+                                                        {unitOptions.map(
+                                                            (option) => (
+                                                                <option
+                                                                    key={
+                                                                        option.value
+                                                                    }
+                                                                    value={
+                                                                        option.value
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        option.label
+                                                                    }
+                                                                </option>
+                                                            )
+                                                        )}
+                                                    </select>
+                                                </td>
+
+                                                <td className="px-4 py-2 border">
+                                                    <input
+                                                        type="number"
+                                                        className="w-full h-[50px] px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                                                        placeholder="0.00"
+                                                        value={amount}
+                                                        onChange={(e) => {
+                                                            const value =
+                                                                e.target.value;
+                                                            // Ensure the value is a valid number, and prevent empty input
+                                                            if (
+                                                                !value ||
+                                                                !isNaN(value)
+                                                            ) {
+                                                                setAmount(
+                                                                    value
+                                                                );
+                                                            }
+                                                        }}
+                                                        min="0"
+                                                        step="0.01"
+                                                    />
+                                                </td>
+
+                                                <td className="px-4 py-2 border">
+                                                    <button
+                                                        id="add_dev_plan"
+                                                        class="bg-blue-500 h-[40px] w-[40px] hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faPlusSquare}
+                                                        />
+                                                    </button>
+
+                                                    <button class="bg-red-500 h-[40px] w-[40px] hover:bg-red-600 text-white px-3 py-1 rounded text-sm ml-2">
+                                                        <FontAwesomeIcon
+                                                            icon={faTrash}
+                                                        />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {/* আরও রো চাইলে এখানে অ্যাড করুন */}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {/* table add now */}
 
                                 {/* active selected end */}
                                 {/* Buttons */}
-                                <div className="w-[700px] flex items-center justify-end mt-4">
+                                <div className="w-[1170px] flex items-center justify-end mt-[20px]">
                                     <button
                                         type="submit"
                                         className="px-4 h-[40px] py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center justify-center"
@@ -337,9 +754,7 @@ const Request = () => {
                                     <button
                                         type="button"
                                         className="px-4 h-[40px] py-2 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
-                                        onClick={() =>
-                                            setAddSalaryAdvance(false)
-                                        }
+                                        onClick={() => setRequest(false)}
                                         disabled={loading} // ক্লোজ বাটনও ডিসেবল হবে যখন লোডিং চলবে
                                     >
                                         Close
