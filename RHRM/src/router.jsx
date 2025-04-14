@@ -38,6 +38,8 @@ const ManageEmployeeSalary = lazy(() =>
     import("./views/ManageEmployeeSalary.jsx")
 );
 const ProcurementRequest = lazy(() => import("./views/ProcurementRequest.jsx"));
+const UnitsRequest = lazy(() => import("./views/UnitsRequest.jsx"));
+const CommitteeRequest = lazy(() => import("./views/CommitteeRequest.jsx"));
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -425,6 +427,7 @@ const router = createBrowserRouter([
     },
     // Salary Ends
     // ProcurementRequest
+    // nubmer: 1;
     {
         path: "/procurement_request",
         element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
@@ -435,6 +438,40 @@ const router = createBrowserRouter([
                     <Suspense fallback={<Loading />}>
                         <PageLoaderWrapper>
                             <ProcurementRequest />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // number:7
+    {
+        path: "/hr/committee",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/committee",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <CommitteeRequest />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // nubmer: 8;
+    {
+        path: "/hr/units",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/units",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <UnitsRequest />
                         </PageLoaderWrapper>
                     </Suspense>
                 ),

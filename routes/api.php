@@ -170,3 +170,24 @@ use App\Http\Controllers\ProcurementRequestController;
 Route::post('/requests', [ProcurementRequestController::class, 'store']);
 
 Route::get('/Request-data', [ProcurementRequestController::class, 'index']);
+
+Route::put('/records/{id}', [ProcurementRequestController::class, 'update']);
+Route::get('/edit-data/{id}', [ProcurementRequestController::class, 'edit']);
+Route::put('/update-data/{id}', [ProcurementRequestController::class, 'update']);
+// nubmer 8
+// Unit Request
+use App\Http\Controllers\UnitController;
+
+Route::get('/units', [UnitController::class, 'index']);
+Route::post('/units', [UnitController::class, 'store']);
+Route::put('/units/{id}', [UnitController::class, 'update']);
+// routes/api.php
+Route::delete('/units/{id}', [UnitController::class, 'destroy']);
+// sigin Requst
+use App\Http\Controllers\SignatureController; //committree
+
+Route::post('/committee', [SignatureController::class, 'store']);
+Route::get('/committees', [SignatureController::class, 'index']);
+Route::put('/committee/{id}', [SignatureController::class, 'update']);
+
+

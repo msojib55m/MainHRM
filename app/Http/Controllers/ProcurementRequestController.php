@@ -31,5 +31,30 @@ class ProcurementRequestController extends Controller
         $employees = Request::all();
         return response()->json($employees);
     }
+    // update
+    
+
+    public function edit($id)
+{
+    $data = Request::findOrFail($id);
+    return response()->json($data);
+}
+public function update(HttpRequest $request, $id)
+{
+    \Log::info($request->all());
+
+    $data = Request::findOrFail($id);
+
+    $data->employee = $request->input('employee');
+    $data->position = $request->input('position');
+    $data->start_date = $request->input('start_date');
+    $data->end_date = $request->input('end_date');
+    $data->description1 = $request->input('description1');
+    $data->description2 = $request->input('description2');
+    $data->amount = $request->input('amount');
+    $data->save();
+
+    return response()->json(['message' => 'Data updated successfully']);
+}
 
 }

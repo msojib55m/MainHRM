@@ -12,67 +12,57 @@ import {
 import axios from "axios";
 
 const Units = () => {
-    const [openUnits, setUnits] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [unitList, setUnitList] = useState([]);
     const [unitName, setUnitName] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [openUnits, setUnits] = useState(false);
+    const [editId, setEditId] = useState(null);
+    const [loadingTable, setLoadingTable] = useState(false);
+
+    const fetchUnits = async () => {
+        setLoadingTable(true);
+        try {
+            const response = await axios.get("http://127.0.0.1:8000/api/units");
+
+            // 👉 চেক করে দেখো, ডেটা আসছে কি না
+            console.log("Units API Response:", response.data);
+
+            // যদি data এর ভেতরে data থাকে
+            setUnitList(response.data.data ?? []); // ✅ fallback হিসেবে খালি অ্যারে
+        } catch (error) {
+            console.error("Error fetching units:", error);
+            setUnitList([]); // fallback fallback
+        } finally {
+            setLoadingTable(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUnits();
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/units", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ unit_name: unitName }),
+            await axios.post("http://127.0.0.1:8000/api/units", {
+                unit_name: unitName,
             });
-
-            if (!response.ok) throw new Error("Something went wrong");
-            const data = await response.json();
-
+            fetchUnits();
             setUnitName("");
             setUnits(false);
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Failed to save unit");
-        } finally {
-            setLoading(false);
-        }
-    };
-    // data to add in table
-    const [unitList, setUnitList] = useState([]);
-    const [loadingTable, setLoadingTable] = useState(true);
-    useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/unitsRequest")
-            .then((res) => res.json())
-            .then((data) => {
-                setUnitList(data);
-                setLoadingTable(false);
-            })
-            .catch((err) => {
-                console.error("Failed to load units:", err);
-                setLoadingTable(false);
-            });
-    }, []);
-    const fetchUnits = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get("http://127.0.0.1:8000/api/units");
-            setUnitList(res.data);
         } catch (err) {
-            console.error("Fetching units failed:", err);
+            console.error("Submit failed:", err);
         } finally {
             setLoading(false);
         }
     };
-    useEffect(() => {
-        fetchUnits();
-    }, []);
+
     const handleUpdate = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.put(`/api/units/${editId}`, {
+            await axios.put(`http://127.0.0.1:8000/api/units/${editId}`, {
                 unit_name: unitName,
             });
             fetchUnits();
@@ -91,6 +81,28 @@ const Units = () => {
         setUnitName(unit.unit_name);
         setUnits(true);
     };
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this unit?")) {
+            return;
+        }
+
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/units/${id}`);
+            fetchUnits(); // টেবিল রিফ্রেশ
+        } catch (error) {
+            console.error("Delete failed:", error);
+        }
+    };
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredUnitList, setFilteredUnitList] = useState(unitList);
+    useEffect(() => {
+        const filtered = unitList.filter((unit) =>
+            unit.unit_name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredUnitList(filtered);
+    }, [searchTerm, unitList]);
+    const [entries, setEntries] = useState(10); // ডিফল্ট 10টি এন্ট্রি দেখানো হবে
+    const displayedUnits = filteredUnitList.slice(0, entries); // পেজ ট্র্যাক করার জন্য
     return (
         <div>
             {/* header now */}
@@ -102,7 +114,11 @@ const Units = () => {
                     <div className="">
                         <button
                             class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
-                            onClick={() => setUnits(true)}
+                            onClick={() => {
+                                setUnitName("");
+                                setEditId(null);
+                                setUnits(true);
+                            }}
                         >
                             <FontAwesomeIcon icon={faCirclePlus} />
                             <div className="ml-[5px]">Add unit</div>
@@ -121,6 +137,10 @@ const Units = () => {
                                     className=" p-2 border border-gray-300 rounded-md 
                                                                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 
                                                                     appearance-none h-[40px] ml-[10px] mr-[10px]"
+                                    value={entries}
+                                    onChange={(e) =>
+                                        setEntries(Number(e.target.value))
+                                    }
                                 >
                                     <option value="10" selected>
                                         10
@@ -146,6 +166,10 @@ const Units = () => {
                                         type="text"
                                         class="w-[300px] ml-[20px] h-[40px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                         placeholder="Search..."
+                                        value={searchTerm}
+                                        onChange={(e) =>
+                                            setSearchTerm(e.target.value)
+                                        }
                                     />
                                 </div>
                             </div>
@@ -207,7 +231,7 @@ const Units = () => {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : unitList.length === 0 ? (
+                            ) : displayedUnits.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan="3"
@@ -217,24 +241,32 @@ const Units = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                unitList.map((unit, index) => (
+                                displayedUnits.map((unit, index) => (
                                     <tr
                                         key={unit.id}
                                         className="hover:bg-gray-50"
                                     >
-                                        <td className="border border-gray-300 px-4 py-2">
+                                        <td className="border px-4 py-2">
                                             {index + 1}
                                         </td>
-                                        <td className="border border-gray-300 px-4 py-2">
+                                        <td className="border px-4 py-2">
                                             {unit.unit_name}
                                         </td>
                                         <td className="border border-gray-300 px-4 py-2">
-                                            <button className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1">
+                                            <button
+                                                className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1"
+                                                onClick={() => handleEdit(unit)}
+                                            >
                                                 <FontAwesomeIcon
                                                     icon={faEdit}
                                                 />
                                             </button>
-                                            <button className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1">
+                                            <button
+                                                className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1"
+                                                onClick={() =>
+                                                    handleDelete(unit.id)
+                                                }
+                                            >
                                                 <FontAwesomeIcon
                                                     icon={faTrash}
                                                 />
@@ -253,10 +285,13 @@ const Units = () => {
                     <div className="w-[700px] bg-white p-4 rounded-lg shadow-lg z-50 relative">
                         <h5 className="text-lg font-semibold">Add new unit</h5>
                         <hr className="border-t-1 border-gray-300 mt-2" />
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={editId ? handleUpdate : handleSubmit}>
                             <div className="flex justify-between items-center mt-[20px]">
                                 <div>
-                                    <h4>Unit*</h4>
+                                    <h4>
+                                        {" "}
+                                        {editId ? "Update Unit" : "Add Unit"}
+                                    </h4>
                                 </div>
                                 <div>
                                     <input
@@ -284,6 +319,8 @@ const Units = () => {
                                             ></svg>
                                             Processing...
                                         </div>
+                                    ) : loading ? (
+                                        "Saving..."
                                     ) : (
                                         "Save"
                                     )}
