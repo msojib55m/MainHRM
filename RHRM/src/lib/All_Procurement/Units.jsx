@@ -338,6 +338,29 @@ const Units = () => {
                     </div>
                 </div>
             )}
+            <div className="relative">
+                <div>
+                    <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ">
+                        <div className="flex items-center justify-between pr-[20px] pl-[20px]">
+                            <div className="">
+                                <h1 className="mt-[20px]">
+                                    © 2025 BDTASK , All Rights Reserved.
+                                </h1>
+                            </div>
+                            <div className="mt-[20px]">
+                                <div className="flex">
+                                    <div>
+                                        <h1>Designed by:</h1>
+                                    </div>
+                                    <div className="ml-[10px] text-[blue]">
+                                        <p className="">Sojib</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
         </div>
     );
 };

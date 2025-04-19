@@ -1,3 +1,15 @@
+// import React from 'react';
+
+// const VendorProcurement = () => {
+//   return (
+//     <div>
+
+//     </div>
+//   );
+// }
+
+// export default VendorProcurement;
+
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";
@@ -32,7 +44,8 @@ import {
 import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/Contextsprovider";
 import axiosClient from "../axiosClient";
-import Request from "../lib/All_Procurement/Request";
+import Vendor from "../lib/All_Procurement/Vendor";
+
 // try navbar toggle
 // try navbar toggle
 // show navbar
@@ -43,7 +56,7 @@ const pictures = [
     "https://hrm.bdtask-demoserver.com/storage/application/1716900212sidebar-collapsed-logo.png",
 ];
 
-const ProcurementRequest = () => {
+const VendorProcurement = () => {
     const { user, token, setUser, setToken } = useStateContext();
     if (!token) {
         return <Navigate to="login" />;
@@ -335,7 +348,7 @@ const ProcurementRequest = () => {
         <>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Add request</title>
+                <title>Vendor list</title>
                 <link rel="canonical" href="http://mysite.com/example" />
             </Helmet>
             <div
@@ -678,7 +691,7 @@ const ProcurementRequest = () => {
                     >
                         <div className="sticky mt-[100px] "></div>
                         <div>
-                            <Request />
+                            <Vendor />
                         </div>
                     </div>
                 </div>
@@ -687,4 +700,4 @@ const ProcurementRequest = () => {
     );
 };
 
-export default ProcurementRequest;
+export default VendorProcurement;

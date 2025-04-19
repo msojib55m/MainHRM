@@ -175,6 +175,11 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+            // নিচের লিস্টের সবগুলো যেন class হয়
+    /*
+     * Laravel Framework Service Providers...
+     */
+
         
 
     ],

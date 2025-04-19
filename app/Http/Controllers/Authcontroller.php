@@ -81,30 +81,7 @@ class AuthController extends Controller
         $employess = User::pluck('name')->toArray();
         return response()->json($employess);
     }
-// Controller method
 
-
-// public function index()
-// {
-//     try {
-//         $data = DB::table('users')
-//             ->leftJoin('salaries', 'users.id', '=', 'salaries.user_id')
-//             ->select(
-//                 'users.id as user_id',
-//                 'users.name as user_name',
-             
-//                 'salaries.salary_month',
-//                 'salaries.gross_salary'
-//             )
-//             ->orderBy('users.id', 'asc') // সুন্দরভাবে সাজানো
-//             ->get();
-
-//         return response()->json($data);
-//     } catch (\Exception $e) {
-//         \Log::error('Error fetching salary data: ' . $e->getMessage());
-//         return response()->json(['error' => 'Something went wrong'], 500);
-//     }
-// }
 
 
 public function index()

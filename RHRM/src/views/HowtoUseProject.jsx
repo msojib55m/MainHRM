@@ -6,3 +6,6 @@ npm install jspdf//pdf download
 
 npm install react-select
 
+npm install react-select react-select-country-list // সব দেশের নাম থাকবে
+
+

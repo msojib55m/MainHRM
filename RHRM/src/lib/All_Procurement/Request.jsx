@@ -77,7 +77,7 @@ const Request = () => {
     // API থেকে ডেটা আনা
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:8000/api/positionsOne")
+            .get("http://127.0.0.1:8000/api/DepartmentName")
             .then((response) => {
                 setPositions(response.data);
                 setFilteredPositions(response.data);
@@ -419,7 +419,7 @@ const Request = () => {
                                     Requesting person
                                 </th>
                                 <th class="border border-gray-300 px-4 py-2">
-                                    Requesting person
+                                    Requesting department
                                 </th>
 
                                 <th class="border border-gray-300 px-4 py-2">
@@ -1341,6 +1341,29 @@ const Request = () => {
                     </div>
                 </div>
             )}
+            <div className="relative">
+                <div>
+                    <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ">
+                        <div className="flex items-center justify-between pr-[20px] pl-[20px]">
+                            <div className="">
+                                <h1 className="mt-[20px]">
+                                    © 2025 BDTASK , All Rights Reserved.
+                                </h1>
+                            </div>
+                            <div className="mt-[20px]">
+                                <div className="flex">
+                                    <div>
+                                        <h1>Designed by:</h1>
+                                    </div>
+                                    <div className="ml-[10px] text-[blue]">
+                                        <p className="">Sojib</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
         </div>
     );
 };

@@ -40,6 +40,7 @@ const ManageEmployeeSalary = lazy(() =>
 const ProcurementRequest = lazy(() => import("./views/ProcurementRequest.jsx"));
 const UnitsRequest = lazy(() => import("./views/UnitsRequest.jsx"));
 const CommitteeRequest = lazy(() => import("./views/CommitteeRequest.jsx"));
+const VendorProcurement = lazy(() => import("./views/VendorProcurement.jsx"));
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -444,6 +445,24 @@ const router = createBrowserRouter([
             },
         ],
     },
+    // number:6
+    {
+        path: "/hr/vendor",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/vendor",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <VendorProcurement />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // number:6
     // number:7
     {
         path: "/hr/committee",

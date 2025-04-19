@@ -131,6 +131,58 @@ const Committee = () => {
         }
     };
     // Edit now start
+    // delete now
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/committee/${id}`);
+
+            fetchCommittees(); // টেবিল রিফ্রেশ করো
+        } catch (error) {
+            console.error("Delete Error:", error);
+            alert("ডিলিট করতে সমস্যা হয়েছে!");
+        }
+    };
+    //  download now Excel now
+    const handleDownloadExcel = () => {
+        // Prepare data for export
+        const data = filteredCommittees.map((committee, index) => ({
+            No: index + 1,
+            Name: committee.name,
+            Signature: committee.signature,
+        }));
+
+        // Create a new workbook and add the data to it
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Committees");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(wb, "committees.xlsx");
+    };
+    //  download now Excel now
+    // download now CSV
+    const handleDownloadCSV = () => {
+        const data = filteredCommittees.map((committee, index) => ({
+            No: index + 1,
+            Name: committee.name,
+            Signature: committee.signature,
+        }));
+
+        const csv = Papa.unparse(data);
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "committees.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    // selected now
+    const [entriesToShow, setEntriesToShow] = useState(10); // ডিফল্ট 10
+
     return (
         <div>
             <div class="p-4  bg-white rounded-lg h-[auto] w-[auto] mt-[20px] ">
@@ -163,6 +215,12 @@ const Committee = () => {
                                     className=" p-2 border border-gray-300 rounded-md 
                                                         focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 
                                                         appearance-none h-[40px] ml-[10px] mr-[10px]"
+                                    value={entriesToShow}
+                                    onChange={(e) =>
+                                        setEntriesToShow(
+                                            parseInt(e.target.value)
+                                        )
+                                    }
                                 >
                                     <option value="10" selected>
                                         10
@@ -178,13 +236,19 @@ const Committee = () => {
                         {/* select data page */}
                         {/* csv Download and Excel  */}
                         <div className="bg-blue-500 text-white py-2 px-4 rounded-sm flex">
-                            <button className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            <button
+                                className="flex w-[70px] bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                onClick={handleDownloadCSV}
+                            >
                                 <div>
                                     <FontAwesomeIcon icon={faFileCsv} />
                                 </div>
                                 CSV
                             </button>
-                            <button className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            <button
+                                className="flex w-[70px]  bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                                onClick={handleDownloadExcel}
+                            >
                                 Excel
                                 <div>
                                     <FontAwesomeIcon icon={faFileExcel} />
@@ -287,41 +351,55 @@ const Committee = () => {
                                 </tr>
                             ) : (
                                 // Display the data (committees) once fetched
-                                filteredCommittees.map((committee, index) => (
-                                    <tr key={committee.id} className="border-b">
-                                        <td className="border border-gray-300 px-4 py-2">
-                                            {index + 1}
-                                        </td>
-                                        <td className="border border-gray-300 px-4 py-2">
-                                            {committee.name}
-                                        </td>
-                                        <td className="border border-gray-300 px-4 py-2">
-                                            <img
-                                                src={committee.signature}
-                                                alt="Signature"
-                                                className="h-12"
-                                            />
-                                        </td>
+                                filteredCommittees
+                                    .slice(0, entriesToShow)
+                                    .map((committee, index) => (
+                                        <tr
+                                            key={committee.id}
+                                            className="border-b"
+                                        >
+                                            <td className="border border-gray-300 px-4 py-2">
+                                                {index + 1}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2">
+                                                {committee.name}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2">
+                                                <img
+                                                    src={`${
+                                                        committee.signature
+                                                    }?t=${new Date().getTime()}`}
+                                                    alt="Signature"
+                                                    className="h-12"
+                                                />
+                                            </td>
 
-                                        <td className="border border-gray-300 px-4 py-2">
-                                            <button
-                                                className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1"
-                                                onClick={() => {
-                                                    handleEdit(committee);
-                                                }}
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faEdit}
-                                                />
-                                            </button>
-                                            <button className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1">
-                                                <FontAwesomeIcon
-                                                    icon={faTrash}
-                                                />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
+                                            <td className="border border-gray-300 px-4 py-2">
+                                                <button
+                                                    className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1"
+                                                    onClick={() => {
+                                                        handleEdit(committee);
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faEdit}
+                                                    />
+                                                </button>
+                                                <button
+                                                    className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1"
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            committee.id
+                                                        )
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faTrash}
+                                                    />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
                             )}
                         </tbody>
                     </table>
@@ -506,6 +584,29 @@ const Committee = () => {
                     </div>
                 </div>
             )}
+            <div className="relative">
+                <div>
+                    <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ">
+                        <div className="flex items-center justify-between pr-[20px] pl-[20px]">
+                            <div className="">
+                                <h1 className="mt-[20px]">
+                                    © 2025 BDTASK , All Rights Reserved.
+                                </h1>
+                            </div>
+                            <div className="mt-[20px]">
+                                <div className="flex">
+                                    <div>
+                                        <h1>Designed by:</h1>
+                                    </div>
+                                    <div className="ml-[10px] text-[blue]">
+                                        <p className="">Sojib</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
         </div>
     );
 };

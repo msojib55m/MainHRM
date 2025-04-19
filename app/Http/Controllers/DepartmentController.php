@@ -64,5 +64,11 @@ class DepartmentController extends Controller
         return response()->json(['message' => 'Department deleted successfully']);
     }
     // delete now
+    // name fil get
+    public function DepartmentNameAll()
+    {
+        $employees = Department::pluck('name')->toArray(); // অ্যারে আকারে রিটার্ন করবে
+        return response()->json($employees);
+    }
 }
 

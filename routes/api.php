@@ -58,6 +58,7 @@ Route::get('/departments', [DepartmentController::class, 'index']);
 Route::put('/department/{id}', [DepartmentController::class, 'update']);
 // department delete
 Route::delete('/departmentsDelete/{id}', [DepartmentController::class, 'destroy']);
+Route::get('/DepartmentName', [DepartmentController::class, 'DepartmentNameAll']);
 // Department End
 
 
@@ -189,5 +190,13 @@ use App\Http\Controllers\SignatureController; //committree
 Route::post('/committee', [SignatureController::class, 'store']);
 Route::get('/committees', [SignatureController::class, 'index']);
 Route::put('/committee/{id}', [SignatureController::class, 'update']);
+Route::delete('/committee/{id}', [SignatureController::class, 'destroy']);
 
+//Vendor 
+
+use App\Http\Controllers\VendorController;
+Route::post('/vendors', [VendorController::class, 'store']);
+Route::get('/vendors', [VendorController::class, 'index']);
+Route::put('/vendors/{id}', [VendorController::class, 'update']);
+Route::delete('/vendors/{id}', [VendorController::class, 'destroy']);
 
