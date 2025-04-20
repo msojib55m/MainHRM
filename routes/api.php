@@ -63,6 +63,7 @@ Route::get('/DepartmentName', [DepartmentController::class, 'DepartmentNameAll']
 
 
 
+
 // subDepartment start
 
 // mysql data send 
@@ -199,4 +200,10 @@ Route::post('/vendors', [VendorController::class, 'store']);
 Route::get('/vendors', [VendorController::class, 'index']);
 Route::put('/vendors/{id}', [VendorController::class, 'update']);
 Route::delete('/vendors/{id}', [VendorController::class, 'destroy']);
+
+use App\Http\Controllers\ClientController;
+Route::get('/clientsGet', [ClientController::class, 'index']);
+Route::post('/clientsPost', [ClientController::class, 'store']);
+Route::put('/clientsUpdate/{id}', [ClientController::class, 'update']);
+Route::delete('/clientsDelete/{id}', [ClientController::class, 'destroy']);
 

@@ -41,6 +41,9 @@ const ProcurementRequest = lazy(() => import("./views/ProcurementRequest.jsx"));
 const UnitsRequest = lazy(() => import("./views/UnitsRequest.jsx"));
 const CommitteeRequest = lazy(() => import("./views/CommitteeRequest.jsx"));
 const VendorProcurement = lazy(() => import("./views/VendorProcurement.jsx"));
+const ClientsProjectManagement = lazy(() =>
+    import("./views/ClientsProjectManagement.jsx")
+);
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -497,6 +500,26 @@ const router = createBrowserRouter([
             },
         ],
     },
+
+    // Clients project management
+    // number : 1
+    {
+        path: "/project/clients",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/project/clients",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <ClientsProjectManagement />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Clients project management
     // login not allword
     {
         path: "/",
