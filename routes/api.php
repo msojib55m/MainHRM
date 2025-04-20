@@ -207,3 +207,9 @@ Route::post('/clientsPost', [ClientController::class, 'store']);
 Route::put('/clientsUpdate/{id}', [ClientController::class, 'update']);
 Route::delete('/clientsDelete/{id}', [ClientController::class, 'destroy']);
 
+// tasks managers
+use App\Http\Controllers\TasksController;
+Route::post('/projects', [TasksController::class, 'store']);
+Route::get('/projects', [TasksController::class, 'index']);
+Route::put('/updateTaks/{id}', [TasksController::class, 'update']);
+Route::delete('/TasksId/{id}', [TasksController::class, 'destroy']);

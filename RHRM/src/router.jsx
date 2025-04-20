@@ -44,6 +44,7 @@ const VendorProcurement = lazy(() => import("./views/VendorProcurement.jsx"));
 const ClientsProjectManagement = lazy(() =>
     import("./views/ClientsProjectManagement.jsx")
 );
+const ManageTasksProject = lazy(() => import("./views/ManageTasksProject.jsx"));
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -513,6 +514,24 @@ const router = createBrowserRouter([
                     <Suspense fallback={<Loading />}>
                         <PageLoaderWrapper>
                             <ClientsProjectManagement />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+
+    // number : 3
+    {
+        path: "/project/manage_tasks",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/project/manage_tasks",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <ManageTasksProject />
                         </PageLoaderWrapper>
                     </Suspense>
                 ),
