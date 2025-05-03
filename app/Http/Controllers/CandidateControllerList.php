@@ -24,5 +24,18 @@ public function store(Request $request)
 
     return response()->json(['message' => 'Candidate Shortlisted Successfully']);
 }
+public function destroy($id)
+{
+    $candidate = CandidateShortList::find($id);
+
+    if (!$candidate) {
+        return response()->json(['message' => 'Candidate not found'], 404);
+    }
+
+    $candidate->delete();
+
+    return response()->json(['message' => 'Candidate deleted successfully']);
+}
+
 
 }

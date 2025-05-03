@@ -227,3 +227,4 @@ Route::get('/candidateShort',[CandidateController::class,'AllCandateShow']);
 use App\Http\Controllers\CandidateControllerList;
 Route::get('/CandidateShortListGet', [CandidateControllerList::class, 'index']);
 Route::post('/CandidateShortListPost', [CandidateControllerList::class, 'store']); 
+Route::delete('/deleteCandidate/{id}', [CandidateControllerList::class, 'destroy']);
