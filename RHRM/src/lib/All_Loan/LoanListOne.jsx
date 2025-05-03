@@ -40,6 +40,7 @@ const LoanListOne = () => {
     const [selectedEmployeeAddTwo, setSelectedEmployeeAddTwo] =
         useState("Select supervisor");
     const [isLoading, setIsLoading] = useState(true);
+    // number one
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/employees")
             .then((res) => res.json())

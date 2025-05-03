@@ -45,6 +45,9 @@ const ClientsProjectManagement = lazy(() =>
     import("./views/ClientsProjectManagement.jsx")
 );
 const ManageTasksProject = lazy(() => import("./views/ManageTasksProject.jsx"));
+const TemMemborsReports = lazy(() => import("./views/TemMemborsReports.jsx"));
+const CandidateList = lazy(() => import("./views/CandidateList.jsx"));
+const CandidateShortlist = lazy(() => import("./views/CandidateShortlist.jsx"));
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -538,7 +541,62 @@ const router = createBrowserRouter([
             },
         ],
     },
+    // number : 4
+    {
+        path: "/project/team_member_search",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/project/team_member_search",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <TemMemborsReports />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
     // Clients project management
+    // cadidateList all now
+    // candidate list one
+    {
+        path: "/hr/recruitment",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/recruitment",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <CandidateList />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // candidate list one
+    // candidateShortlist one
+    {
+        path: "/hr/shortlist",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/shortlist",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <CandidateShortlist />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // candidateShortlist one
+    // cadidateList all now
     // login not allword
     {
         path: "/",

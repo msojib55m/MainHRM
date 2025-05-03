@@ -213,3 +213,17 @@ Route::post('/projects', [TasksController::class, 'store']);
 Route::get('/projects', [TasksController::class, 'index']);
 Route::put('/updateTaks/{id}', [TasksController::class, 'update']);
 Route::delete('/TasksId/{id}', [TasksController::class, 'destroy']);
+
+
+// Route::get('/employees', [AuthController::class, 'getEmployees']);
+// candidate List now
+use App\Http\Controllers\CandidateController;
+Route::post('/candidates', [CandidateController::class, 'store']);
+Route::get('/candidates', [CandidateController::class, 'index']);
+Route::put('/candidates/{id}', [CandidateController::class, 'update']);
+Route::delete('CandidateId/{id}',[CandidateController::class,'destroy']);
+Route::get('/candidateShort',[CandidateController::class,'AllCandateShow']);
+// CandidateShortList now
+use App\Http\Controllers\CandidateControllerList;
+Route::get('/CandidateShortListGet', [CandidateControllerList::class, 'index']);
+Route::post('/CandidateShortListPost', [CandidateControllerList::class, 'store']); 
