@@ -236,4 +236,16 @@ use App\Http\Controllers\InterviewController;
 Route::post('/interviews', [InterviewController::class, 'store']);
 Route::get('/interviews', [InterviewController::class, 'index']);
 Route::delete('/interviews/{id}', [InterviewController::class, 'destroy']);
+Route::get('/CandidateSelection', [InterviewController::class, 'CandidateSelection']);
+Route::get('/CandidateSelection2', [InterviewController::class, 'CandidateSelection2']);
+
+// SelectionTermController 
+use App\Http\Controllers\SelectionTermController;
+
+Route::get('/selection-terms', [SelectionTermController::class, 'index']);
+Route::post('/selection-terms', [SelectionTermController::class, 'store']);
+Route::put('/selectionTermsUpdate/{id}', [SelectionTermController::class, 'update']);
+Route::delete('/selectionTermsDelete/{id}', [SelectionTermController::class, 'destroy']);
+
+
 

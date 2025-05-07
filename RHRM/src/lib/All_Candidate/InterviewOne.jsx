@@ -88,7 +88,7 @@ const InterviewOne = () => {
             interviewer,
             details,
         };
-        console.log("Submitting this data:", payload);
+
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/interviews",

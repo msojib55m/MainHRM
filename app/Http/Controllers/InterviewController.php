@@ -53,8 +53,16 @@ public function destroy($id)
 
 
 
-
-
+   public function CandidateSelection()
+    {
+        $employees = Interview::pluck('candidate_name')->toArray();
+        return response()->json($employees);
+    }
+    public function CandidateSelection2()
+    {
+        $employees = Interview::pluck('job_position')->toArray();
+        return response()->json($employees);
+    }
 
 
 }
