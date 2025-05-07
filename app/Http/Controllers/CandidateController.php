@@ -57,6 +57,11 @@ class CandidateController extends Controller
         return response()->json($fullNames);
     }
     
+    public function Candidate()
+    {
+        $employees = Candidate::pluck('name')->toArray(); // OK
+        return response()->json($employees); // অথবা response()->json(['data' => $employees])
+    }
     
     
 }

@@ -48,6 +48,7 @@ const ManageTasksProject = lazy(() => import("./views/ManageTasksProject.jsx"));
 const TemMemborsReports = lazy(() => import("./views/TemMemborsReports.jsx"));
 const CandidateList = lazy(() => import("./views/CandidateList.jsx"));
 const CandidateShortlist = lazy(() => import("./views/CandidateShortlist.jsx"));
+const Interview = lazy(() => import("./views/Interview.jsx"));
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -597,6 +598,24 @@ const router = createBrowserRouter([
     },
     // candidateShortlist one
     // cadidateList all now
+    // InterviewOne
+    {
+        path: "/hr/interview",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/interview",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <Interview />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // InterviewOne
     // login not allword
     {
         path: "/",
