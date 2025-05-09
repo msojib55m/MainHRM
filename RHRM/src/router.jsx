@@ -50,6 +50,9 @@ const CandidateList = lazy(() => import("./views/CandidateList.jsx"));
 const CandidateShortlist = lazy(() => import("./views/CandidateShortlist.jsx"));
 const Interview = lazy(() => import("./views/Interview.jsx"));
 const CandidateSelection = lazy(() => import("./views/CandidateSelection.jsx"));
+const PointCategoriesMain = lazy(() =>
+    import("./views/pointCategoriesMain.jsx")
+);
 
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
@@ -634,6 +637,27 @@ const router = createBrowserRouter([
             },
         ],
     },
+    //  Reward points
+
+    // Point categories start\
+    {
+        path: "/reward/point-categories",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/reward/point-categories",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <PointCategoriesMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Point categories  Ends
+
     // login not allword
     {
         path: "/",

@@ -246,6 +246,18 @@ Route::get('/selection-terms', [SelectionTermController::class, 'index']);
 Route::post('/selection-terms', [SelectionTermController::class, 'store']);
 Route::put('/selectionTermsUpdate/{id}', [SelectionTermController::class, 'update']);
 Route::delete('/selectionTermsDelete/{id}', [SelectionTermController::class, 'destroy']);
+// PointCategoryController 
+use App\Http\Controllers\PointCategoryController;
+// Route::get('/pointCategories', [PointCategoryController::class, 'index']);
+// Route::post('/pointCategories', [PointCategoryController::class, 'store']);
+// Route::put('/pointCategories/{id}', [PointCategoryController::class, 'update']);
+// Route::delete('/pointCategories/{id}', [PointCategoryController::class, 'destroy']);
 
+
+Route::get('/pointCategories', [PointCategoryController::class, 'index']);
+Route::post('/pointCategories', [PointCategoryController::class, 'store']);
+
+Route::put('/pointCategories/{id}', [PointCategoryController::class, 'update']);
+Route::delete('/pointCategories/{id}', [PointCategoryController::class, 'destroy']);
 
 
