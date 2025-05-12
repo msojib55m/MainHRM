@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
+Route::get('AllEmployeName',[AuthController::class,'AllEmploye']);
 
 
 Route::post('/attendance', [AttendanceController::class, 'store']);
@@ -248,10 +249,7 @@ Route::put('/selectionTermsUpdate/{id}', [SelectionTermController::class, 'updat
 Route::delete('/selectionTermsDelete/{id}', [SelectionTermController::class, 'destroy']);
 // PointCategoryController 
 use App\Http\Controllers\PointCategoryController;
-// Route::get('/pointCategories', [PointCategoryController::class, 'index']);
-// Route::post('/pointCategories', [PointCategoryController::class, 'store']);
-// Route::put('/pointCategories/{id}', [PointCategoryController::class, 'update']);
-// Route::delete('/pointCategories/{id}', [PointCategoryController::class, 'destroy']);
+
 
 
 Route::get('/pointCategories', [PointCategoryController::class, 'index']);
@@ -260,4 +258,9 @@ Route::post('/pointCategories', [PointCategoryController::class, 'store']);
 Route::put('/pointCategories/{id}', [PointCategoryController::class, 'update']);
 Route::delete('/pointCategories/{id}', [PointCategoryController::class, 'destroy']);
 
+
+// CollaborativePointController
+use App\Http\Controllers\CollaborativePointController;
+Route::post('/collaborative-points', [CollaborativePointController::class, 'store']);
+Route::get('/collaborative-points', [CollaborativePointController::class, 'index']);
 

@@ -132,6 +132,12 @@ const PointCategoriesOne = () => {
     const filteredCategories = categories.filter((category) =>
         category.category_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    const [entries, setEntries] = useState(10);
+    // Handle the change in selected number of entries
+    const handleChange = (e) => {
+        setEntries(e.target.value); // Update entries value based on select
+    };
+    const paginatedCategories = filteredCategories.slice(0, entries);
     return (
         <div>
             <div className="relative">
@@ -173,6 +179,8 @@ const PointCategoriesOne = () => {
                                                                                      h-[40px] 
                                                                                      ml-[10px] 
                                                                                      mr-[10px]"
+                                        value={entries}
+                                        onChange={handleChange}
                                     >
                                         <option value="10" selected>
                                             10
@@ -231,8 +239,8 @@ const PointCategoriesOne = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredCategories.length > 0 ? (
-                                        filteredCategories.map(
+                                    {paginatedCategories.length > 0 ? (
+                                        paginatedCategories.map(
                                             (category, index) => (
                                                 <tr key={category.id}>
                                                     <td className="border border-gray-300 px-2 py-1 text-sm">

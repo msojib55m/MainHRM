@@ -76,13 +76,18 @@ class AuthController extends Controller
         $employess = User::pluck('name')->toArray();
         return response()->json($employess);
     }
+
     public function EmployessId()
     {
         $employess = User::pluck('name')->toArray();
         return response()->json($employess);
     }
 
-
+    public function AllEmploye()
+    {
+        $employess = User::pluck('name')->toArray();
+        return response()->json($employess);
+    }
 
 public function index()
 {

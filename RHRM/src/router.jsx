@@ -54,6 +54,9 @@ const PointCategoriesMain = lazy(() =>
     import("./views/pointCategoriesMain.jsx")
 );
 
+const CollaborativePointsMain = lazy(() =>
+    import("./views/CollaborativePointsMain.jsx")
+);
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -657,7 +660,24 @@ const router = createBrowserRouter([
         ],
     },
     // Point categories  Ends
-
+    // Collaborative Points Main
+    {
+        path: "/reward/collaborative-points",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/reward/collaborative-points",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <CollaborativePointsMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Collaborative Points Main
     // login not allword
     {
         path: "/",
