@@ -57,6 +57,9 @@ const PointCategoriesMain = lazy(() =>
 const CollaborativePointsMain = lazy(() =>
     import("./views/CollaborativePointsMain.jsx")
 );
+const AttendancePointsMain = lazy(() =>
+    import("./views/AttendancePointsMain.jsx")
+);
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -678,6 +681,24 @@ const router = createBrowserRouter([
         ],
     },
     // Collaborative Points Main
+    // Attendance Points Start
+    {
+        path: "/reward/attendance-points",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/reward/attendance-points",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <AttendancePointsMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Attendance Points Start
     // login not allword
     {
         path: "/",

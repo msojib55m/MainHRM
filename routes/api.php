@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
-Route::get('AllEmployeName',[AuthController::class,'AllEmploye']);
+Route::get('AllEmployeName', [AuthController::class, 'AllEmploye']);
 
 
 Route::post('/attendance', [AttendanceController::class, 'store']);
@@ -263,4 +263,9 @@ Route::delete('/pointCategories/{id}', [PointCategoryController::class, 'destroy
 use App\Http\Controllers\CollaborativePointController;
 Route::post('/collaborative-points', [CollaborativePointController::class, 'store']);
 Route::get('/collaborative-points', [CollaborativePointController::class, 'index']);
+
+use App\Http\Controllers\AttendanceControllerPoints;
+Route::post('/attendance-post', [AttendanceControllerPoints::class, 'store']);
+Route::get('/attendance-get', [AttendanceControllerPoints::class, 'index']);
+
 
