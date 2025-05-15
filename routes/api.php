@@ -269,3 +269,11 @@ Route::post('/attendance-post', [AttendanceControllerPoints::class, 'store']);
 Route::get('/attendance-get', [AttendanceControllerPoints::class, 'index']);
 
 
+use App\Http\Controllers\SetupRuleController;
+
+Route::post('/setup-rules', [SetupRuleController::class, 'store']);
+Route::get('/setup-rules', [SetupRuleController::class, 'index']);
+Route::post('/setupRuleUpdate/{id}', [SetupRuleController::class, 'update']);
+
+
+

@@ -60,6 +60,9 @@ const CollaborativePointsMain = lazy(() =>
 const AttendancePointsMain = lazy(() =>
     import("./views/AttendancePointsMain.jsx")
 );
+
+const SetupRuleMain = lazy(() => import("./views/SetupRuleMain.jsx"));
+
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -699,6 +702,24 @@ const router = createBrowserRouter([
         ],
     },
     // Attendance Points Start
+    // Setep Rule one
+    {
+        path: "/hr/setup-rules",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/setup-rules",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <SetupRuleMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Setep Rule one
     // login not allword
     {
         path: "/",
