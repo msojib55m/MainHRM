@@ -133,6 +133,7 @@ Route::get('/employeesAddTwo', [AuthController::class, 'getEmployeesAddTwo']);
 Route::get('/employeesId', [AuthController::class, 'EmployessId']);
 // route 
 Route::get('/salariesName', [AuthController::class, 'index']);
+Route::get('/EmployNameAddNow', [AuthController::class, 'NewMessage']);
 
 
 
@@ -225,6 +226,8 @@ Route::put('/candidates/{id}', [CandidateController::class, 'update']);
 Route::delete('CandidateId/{id}', [CandidateController::class, 'destroy']);
 Route::get('/candidateShort', [CandidateController::class, 'AllCandateShow']);
 
+
+
 // CandidateShortList now
 use App\Http\Controllers\CandidateControllerList;
 Route::get('/CandidateShortListGet', [CandidateControllerList::class, 'index']);
@@ -274,6 +277,15 @@ use App\Http\Controllers\SetupRuleController;
 Route::post('/setup-rules', [SetupRuleController::class, 'store']);
 Route::get('/setup-rules', [SetupRuleController::class, 'index']);
 Route::post('/setupRuleUpdate/{id}', [SetupRuleController::class, 'update']);
+// routes/api.php
+use App\Http\Controllers\NewMessageController;
+Route::post('/selection-terms', [NewMessageController::class, 'store']);
+Route::get('/selection-terms', [NewMessageController::class, 'index']);
+Route::put('/selection-terms/{id}', [NewMessageController::class, 'update']);
+Route::delete('/selection-terms/{id}', [NewMessageController::class, 'destroy']);
+
+
+
 
 
 

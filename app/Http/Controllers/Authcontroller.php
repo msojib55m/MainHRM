@@ -108,8 +108,13 @@ public function index()
         \Log::error('Error fetching salary data: ' . $e->getMessage());
         return response()->json(['error' => 'Something went wrong'], 500);
     }
+  
 }
-
+    public function NewMessage()
+    {
+        $employess = User::pluck('name')->toArray();
+        return response()->json($employess);
+    }
 
 
 

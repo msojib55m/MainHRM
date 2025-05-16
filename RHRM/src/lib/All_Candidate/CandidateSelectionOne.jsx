@@ -222,16 +222,7 @@ const CandidateSelectionOne = () => {
                                 <label className="text-sm font-medium text-[20px]">
                                     Show
                                     <select
-                                        className="    p-2 
-                                                                                     border border-gray-300 
-                                                                                     rounded-md 
-                                                                                     focus:outline-none 
-                                                                                     focus:ring-2 focus:ring-green-500 
-                                                                                     focus:border-green-500 
-                                                                                     appearance-none 
-                                                                                     h-[40px] 
-                                                                                     ml-[10px] 
-                                                                                     mr-[10px]"
+                                        className="    p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none h-[40px] ml-[10px] mr-[10px]"
                                         value={entriesToShow}
                                         onChange={(e) =>
                                             setEntriesToShow(
