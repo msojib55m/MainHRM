@@ -4,19 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\NewMessageTerm;
-
+use Illuminate\Support\Facades\Log;
 class NewMessageController extends Controller
 {
 public function store(Request $request)
 {
+   
     $request->validate([
         'candidate_name' => 'required|string|max:255',
+      'receiver_name' => 'required|string',
         'subject' => 'required|string|max:255',
         'message' => 'required|string',
     ]);
 
     NewMessageTerm::create([
         'candidate_name' => $request->candidate_name,
+        'receiver_name' => $request->receiver_name,
         'subject' => $request->subject,
         'message' => $request->message,
     ]);
@@ -35,6 +38,7 @@ public function store(Request $request)
     // ✅ ডাটা যাচাই
     $request->validate([
         'candidate_name' => 'required|string|max:255',
+          'receiver_name' => 'required|string',
         'subject' => 'required|string|max:255',
         'message' => 'required|string',
     ]);
@@ -45,6 +49,7 @@ public function store(Request $request)
     // ✅ ডাটা আপডেট করা
     $term->update([
         'candidate_name' => $request->candidate_name,
+        'receiver_name' => $request->receiver_name,
         'subject' => $request->subject,
         'message' => $request->message,
     ]);

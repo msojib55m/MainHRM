@@ -15,7 +15,8 @@ class CreateNewMessageTermsTable extends Migration
     {
         Schema::create('new_message_terms', function (Blueprint $table) {
             $table->id();
-                 $table->string('candidate_name');
+            $table->string('candidate_name');
+            $table->string('receiver_name')->nullable(); 
             $table->string('subject')->nullable();
             $table->text('message');
             $table->string('status')->default('not seen');

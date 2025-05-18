@@ -9,6 +9,6 @@ class NewMessageTerm extends Model
 {
     use HasFactory;
     // app/Models/SelectionTerm.php
-    protected $fillable = ['candidate_name', 'subject', 'message'];
+    protected $fillable = ['candidate_name','receiver_name', 'subject', 'message'];
   
 }

@@ -64,7 +64,7 @@ const AttendancePointsMain = lazy(() =>
 const SetupRuleMain = lazy(() => import("./views/SetupRuleMain.jsx"));
 
 const NewMessageMain = lazy(() => import("./views/NewMessageMain.jsx"));
-
+const SentMessageMain = lazy(() => import("./views/SentMessageMain.jsx"));
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -738,6 +738,24 @@ const router = createBrowserRouter([
             },
         ],
     },
+    // Sent Message
+    {
+        path: "/message/sent",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/message/sent",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <SentMessageMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Sent Message
     // Message Rule one
     // login not allword
     {
