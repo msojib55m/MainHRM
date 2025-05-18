@@ -34,6 +34,7 @@ import { useStateContext } from "../contexts/Contextsprovider";
 import axiosClient from "../axiosClient";
 import { motion } from "framer-motion";
 import axios from "axios";
+import AttendanceOne from "../lib/AttendanceAll/AttendanceOne";
 // try navbar toggle
 // try navbar toggle
 // show navbar
@@ -333,7 +334,6 @@ const TakeAttendance = () => {
     // Togle or NavTogle now
     // Togle or NavTogle End
     // attendance now
-
     const links = [
         { id: 1, name: "Attendance form", url: "/attendance" },
         { id: 2, name: "Monthly attendance", url: "/attendance/monthly" },
@@ -342,80 +342,6 @@ const TakeAttendance = () => {
     const navigate = useNavigate();
     // attendance Ends
     const [active, setActive] = useState(links[0].id);
-    // dashbord title
-    // bulk insert show
-    const [isOpen, setIsOpen] = useState(false);
-    // bulk insert show
-    const [employeeId, setEmployeeId] = useState("");
-    const [attendanceTime, setAttendanceTime] = useState("");
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log("Employee ID:", employeeId); // Check if employee_id is set correctly
-        console.log("Attendance Time:", attendanceTime); // Check if attendance_time is set correctly
-
-        // Make the API call to the Laravel backend
-        try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/attendance",
-                {
-                    employee_id: employeeId,
-                    attendance_time: attendanceTime,
-                }
-            );
-
-            // Handle success (response from server)
-            alert(response.data.message); // Example: "Attendance recorded successfully!"
-        } catch (error) {
-            console.error("Error submitting attendance:", error);
-            alert("Failed to record attendance. Please try again.");
-        }
-    };
-
-    // bulk insert
-    const [file, setFile] = useState(null);
-
-    const handleFileChange = (e) => {
-        console.log("Selected file:", e.target.files[0]); // ✅ Debugging
-        setFile(e.target.files[0]);
-    };
-
-    const handleSubmitBluk = async (e) => {
-        e.preventDefault();
-
-        if (!file) {
-            alert("Please select a file");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("bulk", file); // ✅ Name should match Laravel validation
-
-        console.log("Uploading file:", file.name); // ✅ Debugging
-
-        try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/upload",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Accept: "application/json", // ✅ Ensure Laravel understands JSON
-                    },
-                }
-            );
-
-            console.log("Success:", response.data);
-            alert(response.data.message);
-        } catch (error) {
-            console.error("Upload failed:", error.response?.data);
-            alert(
-                "File upload failed: " + JSON.stringify(error.response?.data)
-            );
-        }
-    };
-    // toggle active now
-
     return (
         <>
             <Helmet>
@@ -424,7 +350,7 @@ const TakeAttendance = () => {
                 <link rel="canonical" href="http://mysite.com/example" />
             </Helmet>
             <div
-                className=" bg-gray-300"
+                className=" bg-gray-300 "
                 id="DashbordNow"
                 onClick={toggleDropdown}
             >
@@ -752,249 +678,42 @@ const TakeAttendance = () => {
                 </nav>
                 <Outlet />
                 {/* navbar Ends */}
-            </div>
-
-            <div
-                className={`${
-                    nabVarOpen
-                        ? "fixed w-full h-full mt-[67px] ml-[251px] bg-gray-300 overflow-x-hidden "
-                        : "fixed w-full h-full mt-[67px] ml-[80px] bg-gray-300"
-                } duration-300 `}
-            >
-                <div className=" fixed ml-[20px] mt-[20px] bg-[white] w-[100%] h[100px]">
-                    <div className="flex space-x-4 p-4">
-                        {links.map((link) => (
-                            <button
-                                key={link.id}
-                                onClick={() => {
-                                    setActive(link.id);
-                                    navigate(link.url);
-                                }}
-                                className={`px-4 py-2 rounded-md transition ${
-                                    active === link.id
-                                        ? "bg-green-200 text-black"
-                                        : "bg-gray-300 text-black"
-                                }`}
-                            >
-                                {link.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
                 <div
-                    className={`${
+                    class={`${
                         nabVarOpen
-                            ? "fixed left-[270px] top-[173px] bg-white w-full  md:max-w-[66%] lg:max-w-[74%] lg1:max-w-[76%] xl2:max-w-[76%] xl:max-w-[77%] xxl:max-w-[78%] xxl1:max-w-[80%] min-h-[300px] h-auto shadow-md "
-                            : "fixed left-[100px] top-[173px] bg-white  w-full sm:max-w-[80%] md:max-w-[85%] lg:max-w-[86%] lg1:max-w-[90%] xl2:max-w-[90%] xl:max-w-[90%] xxl:max-w-[85%] xxl1:max-w-[91%] min-h-[300px] h-auto shadow-md"
-                    } duration-300 `}
+                            ? "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[60vw] md:[left:35%] md1:w-[64vw] md1:[left:33%] md2:w-[65vw] md2:[left:33%] md3:w-[66vw] md3:[left:30%] md4:w-[66vw] md4:[left:28%] md5:w-[66vw] md5:[left:30%] lg:w-[69vw] lg:[left:27%] lg2:w-[72vw] lg2:[left:25%] lg3:w-[72vw] lg3:[left:23%] xl1:w-[72vw] xl1:[left:20%] xl:w-[72vw] xl:[left:22%] xxll:w-[73vw] xxll:[left:18%]  xxl1:w-[75vw]  xxl1:[left:20%] xxl2:w-[77vw] xxl2:[left:16%]  "
+                            : "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[83vw] md:[left:12%] md1:w-[83vw] md1:[left:12%] md2:w-[83vw] md2:[left:12%] md3:w-[83vw] md3:[left:12%] md4:w-[83vw] md4:[left:12%] md5:w-[83vw] md5:[left:12%] lg:w-[83vw] lg:[left:12%] lg2:w-[82vw] lg2:[left:12%] lg3:w-[82vw] lg3:[left:12%] xl1:w-[82vw] xl1:[left:12%] xl:w-[82vw] xl:[left:12%] xxll:w-[82vw] xxll:[left:12%]  xxl1:w-[87vw]  xxl1:[left:7%] xxl2:w-[87vw] xxl2:[left:7%]"
+                    } duration-300 no-scrollbar `}
                 >
-                    <div className="flex items-center justify-between w-full px-4 md:px-6 mx-auto pt-[15px] pb-[15px]">
-                        <div className="text-base md:text-lg font-semibold">
-                            Take attendance
-                        </div>
-
-                        <div
-                            onClick={() => setIsOpen(true)}
-                            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-3 py-2 rounded-lg flex items-center"
-                        >
-                            <FontAwesomeIcon
-                                className="text-lg"
-                                icon={faCirclePlus}
-                            />
-                            <span className="text-base md:text-lg">
-                                Bulk insert
-                            </span>
-                        </div>
-                        {isOpen && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                                <motion.div
-                                    initial={{ y: "-100vh", opacity: 0 }} // উপর থেকে শুরু
-                                    animate={{ y: "0", opacity: 1 }} // ধীরে ধীরে নিচে আসবে
-                                    exit={{ y: "-100vh", opacity: 0 }} // বন্ধ হলে উপর দিকে যাবে
-                                    transition={{
-                                        duration: 0.5,
-                                        ease: "easeOut",
-                                    }}
-                                    className="bg-white  rounded-lg shadow-lg w-full max-w-md w-full max-w-2xl"
-                                >
-                                    {/* Modal Header */}
-                                    <div className="px-6 py-4 border-b">
-                                        <h5 className="text-lg font-semibold">
-                                            Bulk Insert
-                                        </h5>
-                                    </div>
-
-                                    <form
-                                        onSubmit={handleSubmitBluk}
-                                        className="p-6"
-                                    >
-                                        <div className="text-center mb-4">
-                                            <h6 className="text-lg font-medium">
-                                                Excel sample file:{" "}
-                                                <a
-                                                    className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600"
-                                                    href="https://hrm.bdtask-demoserver.com/assets/import/bulk.xlsx"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    bulk.xlsx
-                                                </a>
-                                            </h6>
-                                        </div>
-                                        <input
-                                            type="file"
-                                            onChange={handleFileChange}
-                                            required
-                                            className="w-full p-2 border border-gray-300 rounded-lg"
-                                        />
-                                        <div className="flex justify-end space-x-3 border-t pt-4">
-                                            <button
-                                                onClick={() => setIsOpen(false)}
-                                                type="button"
-                                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-                                            >
-                                                Close
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
-                                            >
-                                                Import
-                                            </button>
-                                        </div>
-                                    </form>
-                                </motion.div>
-                            </div>
-                        )}
-                    </div>
-                    <hr />
-                    {/* Employ start */}
-                    <div className="p-4 flex  md:px-6 mx-auto">
-                        <form onSubmit={handleSubmit} className="w-[600px]">
-                            <div className="flex flex-wrap -mx-4">
-                                <div className="w-full md:w-full mt-3">
-                                    <div className="flex flex-wrap px-[20px]">
-                                        <label
-                                            htmlFor="employee_id"
-                                            className="font-semibold text-start text-gray-800 sm:w-1/4 md:w-full xl:w-1/4"
-                                        >
-                                            Employee{" "}
-                                            <span className="text-red-600">
-                                                *
-                                            </span>
-                                        </label>
-                                        <div className="w-full sm:w-3/4 md:w-full xl:w-3/4">
-                                            <select
-                                                value={employeeId}
-                                                onChange={(e) =>
-                                                    setEmployeeId(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-gray-700"
-                                                required
-                                            >
-                                                <option value="" disabled>
-                                                    Select one
-                                                </option>
-                                                <option value="1">
-                                                    Honorato Imogene Curry Terry
-                                                </option>
-                                                <option value="2">
-                                                    Maisha Lucy Zamora Gonzales
-                                                </option>
-                                                <option value="3">
-                                                    Amy Aphrodite Zamora Peck
-                                                </option>
-                                                <option value="4">
-                                                    Jonathan Ibrahim Shekh
-                                                </option>
-                                                <option value="5">
-                                                    Scarlet Melvin Reese Rogers
-                                                </option>
-                                                <option value="6">
-                                                    Arnika Paula Roach Mcmillan
-                                                </option>
-                                                <option value="7">
-                                                    Suchana Noel Mcfarland Mejia
-                                                </option>
-                                                <option value="8">
-                                                    Aquila Elaine Jennings
-                                                    Jefferson
-                                                </option>
-                                                <option value="9">
-                                                    Kristen Lillith Stout
-                                                    Rodriquez
-                                                </option>
-                                                <option value="10">
-                                                    Nell Mohona Lacey Byers
-                                                    Lewis
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex flex-wrap -mx-4">
-                                <div className="w-full md:w-full mt-3 flex px-[20px]">
-                                    <label
-                                        htmlFor="time"
-                                        className="w-full sm:w-1/4 md:w-full xl:w-1/4 font-semibold text-gray-800"
-                                    >
-                                        Time{" "}
-                                        <span className="text-red-600">*</span>
-                                    </label>
-                                    <div className="w-full sm:w-3/4 md:w-full xl:w-3/4">
-                                        <input
-                                            type="datetime-local"
-                                            value={attendanceTime}
-                                            onChange={(e) =>
-                                                setAttendanceTime(
-                                                    e.target.value
-                                                )
-                                            }
-                                            required
-                                            autoComplete="off"
-                                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-gray-700"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="w-full mt-3 text-right">
-                                <div className="flex justify-end mx-[20px]">
+                    <div className=" sticky mt-[100px] h-[80px] p-2 z-10 flex items-start justify-between bg-[white] rounded-[12px]">
+                        <div className="flex items-center justify-between w-full h-[50px] pr-[10px] pl-[10px] relative">
+                            <div className="flex space-x-4 mt-[20px]">
+                                {links.map((link) => (
                                     <button
-                                        type="submit"
-                                        className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded"
+                                        key={link.id}
+                                        onClick={() => {
+                                            setActive(link.id);
+                                            navigate(link.url);
+                                        }}
+                                        className={`px-4 py-2 rounded-md transition ${
+                                            active === link.id
+                                                ? "bg-green-200 text-black"
+                                                : "bg-gray-300 text-black"
+                                        }`}
                                     >
-                                        Submit
+                                        {link.name}
                                     </button>
-                                </div>
+                                ))}
                             </div>
-                        </form>
+                        </div>
                     </div>
-                    {/* Employ Ends */}
-                </div>
-            </div>
-            {/* footer start */}
-            <footer className="fixed bottom-0 left-[250px] w-[calc(100%-250px)] bg-gray-100 py-4 print:hidden">
-                <div className="container mx-auto flex items-center justify-between px-4">
-                    <div className="text-gray-600">
-                        © 2025 BDTASK, All Rights Reserved.
-                    </div>
-                    <div className="text-gray-600">
-                        Designed by:
-                        <a
-                            href="#"
-                            className="text-blue-500 hover:text-blue-600"
-                        >
-                            Bdtask
-                        </a>
-                    </div>
-                </div>
-            </footer>
 
-            {/* footer Ends */}
+                    <AttendanceOne />
+                </div>
+                {/* footer start */}
+
+                {/* footer Ends */}
+            </div>
         </>
     );
 };

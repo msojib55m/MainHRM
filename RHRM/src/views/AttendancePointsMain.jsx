@@ -1,11 +1,3 @@
-// import React from "react";
-
-// const AttendancePointsMain = () => {
-//     return <div></div>;
-// };
-
-// export default AttendancePointsMain;
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";
