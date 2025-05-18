@@ -46,7 +46,6 @@ const SentMessageOne = () => {
         setSubject(item.subject); // Subject input
         setMessag(item.message); // Message textarea
         setEdit(true); // Switch to Edit mode
-        console.log(item);
     };
 
     const [allData, setAllData] = useState([]);
@@ -58,6 +57,22 @@ const SentMessageOne = () => {
     useEffect(() => {
         fetchData();
     }, []);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const lowerSearch = searchTerm.toLowerCase(); // ✅ declare it here
+
+    const filtered = allData.filter(
+        (item) =>
+            (item.candidate_name?.toLowerCase() || "").includes(lowerSearch) ||
+            (item.receiver_name?.toLowerCase() || "").includes(lowerSearch) ||
+            (item.subject?.toLowerCase() || "").includes(lowerSearch) ||
+            (item.message?.toLowerCase() || "").includes(lowerSearch) ||
+            (item.status?.toLowerCase() || "").includes(lowerSearch)
+    );
+    const [itemsToShow, setItemsToShow] = useState(10);
+    const handleItemsToShowChange = (e) => {
+        setItemsToShow(Number(e.target.value));
+    };
     return (
         <div>
             <div className="relative">
@@ -76,7 +91,11 @@ const SentMessageOne = () => {
                             <div className="mt-[20px]  ">
                                 <label className="text-sm font-medium text-[20px]">
                                     Show
-                                    <select className="    p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none h-[40px] ml-[10px] mr-[10px]">
+                                    <select
+                                        className="    p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none h-[40px] ml-[10px] mr-[10px]"
+                                        value={itemsToShow}
+                                        onChange={handleItemsToShowChange}
+                                    >
                                         <option value="10" selected>
                                             10
                                         </option>
@@ -103,6 +122,10 @@ const SentMessageOne = () => {
                                             type="text"
                                             class="w-[300px] ml-[20px] h-[40px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                             placeholder="Search..."
+                                            value={searchTerm}
+                                            onChange={(e) =>
+                                                setSearchTerm(e.target.value)
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -137,52 +160,54 @@ const SentMessageOne = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {allData.map((item, index) => (
-                                        <tr key={item.id}>
-                                            <td className="border px-2 py-1">
-                                                {index + 1}
-                                            </td>
-                                            <td className="border px-2 py-1">
-                                                {item.candidate_name}
-                                            </td>
-                                            <td className="border px-2 py-1">
-                                                {item.subject}
-                                            </td>
-                                            <td className="border px-2 py-1">
-                                                {item.message}
-                                            </td>
-                                            <td
-                                                className={`border px-2 py-1 font-medium ${
-                                                    item.status.toLowerCase() ===
+                                    {filtered
+                                        .slice(0, itemsToShow)
+                                        .map((item, index) => (
+                                            <tr key={item.id}>
+                                                <td className="border px-2 py-1">
+                                                    {index + 1}
+                                                </td>
+                                                <td className="border px-2 py-1">
+                                                    {item.candidate_name}
+                                                </td>
+                                                <td className="border px-2 py-1">
+                                                    {item.subject}
+                                                </td>
+                                                <td className="border px-2 py-1">
+                                                    {item.message}
+                                                </td>
+                                                <td
+                                                    className={`border px-2 py-1 font-medium ${
+                                                        item.status.toLowerCase() ===
+                                                            "pending" ||
+                                                        item.status.toLowerCase() ===
+                                                            "not seen"
+                                                            ? "text-red-600"
+                                                            : "text-green-600"
+                                                    }`}
+                                                >
+                                                    {item.status.toLowerCase() ===
                                                         "pending" ||
                                                     item.status.toLowerCase() ===
                                                         "not seen"
-                                                        ? "text-red-600"
-                                                        : "text-green-600"
-                                                }`}
-                                            >
-                                                {item.status.toLowerCase() ===
-                                                    "pending" ||
-                                                item.status.toLowerCase() ===
-                                                    "not seen"
-                                                    ? " Unseen"
-                                                    : " Seen"}
-                                            </td>
-                                            <td className="border px-2 py-1">
-                                                <button
-                                                    className="bg-green-100 text-green-700 hover:bg-green-200 rounded px-2 py-1 text-sm me-1"
-                                                    title="View"
-                                                    onClick={() =>
-                                                        editHandler(item)
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faEye}
-                                                    />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                        ? " Unseen"
+                                                        : " Seen"}
+                                                </td>
+                                                <td className="border px-2 py-1">
+                                                    <button
+                                                        className="bg-green-100 text-green-700 hover:bg-green-200 rounded px-2 py-1 text-sm me-1"
+                                                        title="View"
+                                                        onClick={() =>
+                                                            editHandler(item)
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faEye}
+                                                        />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>

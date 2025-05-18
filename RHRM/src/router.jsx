@@ -65,6 +65,7 @@ const SetupRuleMain = lazy(() => import("./views/SetupRuleMain.jsx"));
 
 const NewMessageMain = lazy(() => import("./views/NewMessageMain.jsx"));
 const SentMessageMain = lazy(() => import("./views/SentMessageMain.jsx"));
+const InboxMain = lazy(() => import("./views/InboxMain.jsx"));
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -732,6 +733,23 @@ const router = createBrowserRouter([
                     <Suspense fallback={<Loading />}>
                         <PageLoaderWrapper>
                             <NewMessageMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // Inbox Message
+    {
+        path: "/message/Inbox",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/message/Inbox",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <InboxMain />
                         </PageLoaderWrapper>
                     </Suspense>
                 ),

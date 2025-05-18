@@ -1,19 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-// fontawesome Icon start
-// custome Image
-import {
-    faEdit,
-    faTrash,
-    faPlusSquare,
-    faFileCsv,
-    faFileExcel,
-    faCirclePlus,
-} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-const NewMessageOne = () => {
-    const [addMessage, setMessage] = useState(false);
+const InboxMainOne = () => {
     const dropdownRef = useRef(null);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState("Employee name");
@@ -51,9 +40,30 @@ const NewMessageOne = () => {
     );
     const [subject, setSubject] = useState("");
     const [message, setMessag] = useState("");
-    const [allData, setAllData] = useState([]);
-    const [receiver, setReceiver] = useState(""); // ✅ স্পষ্ট এবং সঠিক নাম
+    const [addEdit, setEdit] = useState(false);
+    const editHandler = (item) => {
+        setSelectedEmployee(item.candidate_name); // Candidate dropdown
+        setSubject(item.subject); // Subject input
+        setMessag(item.message); // Message textarea
+        setEdit(true); // Switch to Edit mode
+        if (
+            item.status.toLowerCase() === "pending" ||
+            item.status.toLowerCase() === "not seen"
+        ) {
+            axios
+                .put(`http://127.0.0.1:8000/api/selection-terms/${item.id}`, {
+                    status: "seen",
+                })
+                .then(() => {
+                    fetchData(); // Reload data to show updated status in table
+                })
+                .catch((error) => {
+                    console.error("Failed to update status:", error);
+                });
+        }
+    };
 
+    const [allData, setAllData] = useState([]);
     const fetchData = () => {
         axios.get("http://127.0.0.1:8000/api/selection-terms").then((res) => {
             setAllData(res.data);
@@ -62,90 +72,6 @@ const NewMessageOne = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    const resetForm = () => {
-        setSelectedEmployee("");
-        setSubject("");
-        setMessag("");
-        setReceiver("");
-        setEdit(false);
-        setEditId(null);
-    };
-
-    // ✅ Handle form submit
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const payload = {
-            candidate_name: selectedEmployee,
-            receiver_name: receiver,
-            subject: subject,
-            message: message,
-        };
-
-        axios
-            .post("http://127.0.0.1:8000/api/selection-terms", payload)
-            .then(() => {
-                fetchData();
-                resetForm();
-                setMessage(false);
-            })
-            .catch((error) => {
-                if (error.response) {
-                    console.error(
-                        "Validation errors:",
-                        error.response.data.errors
-                    );
-                }
-            });
-    };
-
-    const [addEdit, setEdit] = useState(false);
-    const [editId, setEditId] = useState(null);
-    const editHandler = (item) => {
-        setSelectedEmployee(item.candidate_name); // Candidate dropdown
-        setReceiver(item.receiver_name);
-        setSubject(item.subject); // Subject input
-        setMessag(item.message);
-        // Message textarea
-        setEdit(true); // Switch to Edit mode
-        setEditId(item.id); // এই ID দরকার update করার সময়
-    };
-    const handleEditSubmit = (e) => {
-        e.preventDefault();
-
-        const payload = {
-            candidate_name: selectedEmployee,
-            receiver_name: receiver, // ✅ ঠিকভাবে পাঠানো
-            subject: subject,
-            message: message,
-        };
-
-        axios
-            .put(`http://127.0.0.1:8000/api/selection-terms/${editId}`, payload)
-            .then(() => {
-                fetchData(); // টেবিল রিফ্রেশ হবে
-                resetForm();
-                setEdit(false);
-                setEditId(null);
-            })
-            .catch((error) => {
-                console.error("Edit error:", error);
-            });
-    };
-    const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete?")) {
-            axios
-                .delete(`http://127.0.0.1:8000/api/selection-terms/${id}`)
-                .then(() => {
-                    fetchData(); // ✅ রিফ্রেশ করে নতুন ডাটা আনো
-                })
-                .catch((error) => {
-                    console.error("Delete error:", error);
-                });
-        }
-    };
-    //
     const [searchTerm, setSearchTerm] = useState("");
 
     const lowerSearch = searchTerm.toLowerCase(); // ✅ declare it here
@@ -162,26 +88,18 @@ const NewMessageOne = () => {
     const handleItemsToShowChange = (e) => {
         setItemsToShow(Number(e.target.value));
     };
+
     return (
         <div>
             <div className="relative">
                 <div class="p-4  bg-white rounded-lg h-[auto] w-[auto] mt-[20px] ">
-                    {/* one */}
                     <div class="flex items-center justify-between w-[auto] ">
                         <div>
-                            <h6 class="text-lg font-semibold mb-0">Messages</h6>
-                        </div>
-                        <div className="">
-                            <button
-                                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
-                                onClick={() => setMessage(true)}
-                            >
-                                <FontAwesomeIcon icon={faCirclePlus} />
-                                <div className="ml-[5px]">New message</div>
-                            </button>
+                            <h6 class="text-lg font-semibold mb-0">
+                                Inbox messages
+                            </h6>
                         </div>
                     </div>
-                    {/* one */}
                     <div class="mt-[20px]">
                         <hr />
                         <div class="flex justify-between items-center ">
@@ -282,37 +200,30 @@ const NewMessageOne = () => {
                                                 <td
                                                     className={`border px-2 py-1 font-medium ${
                                                         item.status.toLowerCase() ===
-                                                        "pending"
+                                                            "pending" ||
+                                                        item.status.toLowerCase() ===
+                                                            "not seen"
                                                             ? "text-red-600"
                                                             : "text-green-600"
                                                     }`}
                                                 >
                                                     {item.status.toLowerCase() ===
-                                                    "pending"
-                                                        ? "Pending"
+                                                        "pending" ||
+                                                    item.status.toLowerCase() ===
+                                                        "not seen"
+                                                        ? " Unseen"
                                                         : " Seen"}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2">
+                                                <td className="border px-2 py-1">
                                                     <button
-                                                        className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1"
+                                                        className="bg-green-100 text-green-700 hover:bg-green-200 rounded px-2 py-1 text-sm me-1"
+                                                        title="View"
                                                         onClick={() =>
                                                             editHandler(item)
                                                         }
                                                     >
                                                         <FontAwesomeIcon
-                                                            icon={faEdit}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1"
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                item.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faTrash}
+                                                            icon={faEye}
                                                         />
                                                     </button>
                                                 </td>
@@ -324,168 +235,12 @@ const NewMessageOne = () => {
                     </div>
                 </div>
             </div>
-            {addMessage && (
-                <div>
-                    <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        <div className="fixed inset-0 bg-black opacity-50"></div>
-                        <div className="w-[950px] bg-white p-4 rounded-lg shadow-lg z-50 relative max-h-[88vh] overflow-y-auto p-6 no-scrollbar scrollable-containe mt-[80px] mb-[30px]">
-                            <form onSubmit={handleSubmit}>
-                                <div className="sticky">
-                                    {/* name */}
-                                    <div className="flex mt-5 justify-between">
-                                        <div>
-                                            <h4> Candidate name *</h4>
-                                        </div>
-                                        <div
-                                            className=" w-[44rem] relative"
-                                            ref={dropdownRef}
-                                        >
-                                            {/* Select Box */}
-                                            <div
-                                                className="block w-full h-10 px-2 py-1 text-gray-700 bg-white border rounded-lg shadow-sm cursor-pointer"
-                                                onClick={() =>
-                                                    setIsOpen(!isOpen)
-                                                }
-                                            >
-                                                {selectedEmployee}
-                                            </div>
-
-                                            {/* Dropdown */}
-                                            {isOpen && (
-                                                <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Search..."
-                                                        className="w-full h-10 px-2 py-1 text-gray-700 border-b border-gray-300"
-                                                        value={search}
-                                                        onChange={(e) =>
-                                                            setSearch(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                    />
-                                                    <ul className="w-full h-40 overflow-y-auto">
-                                                        {filteredEmployees.length >
-                                                        0 ? (
-                                                            filteredEmployees.map(
-                                                                (
-                                                                    employee,
-                                                                    index
-                                                                ) => (
-                                                                    <li
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                                                                        onClick={() => {
-                                                                            setSelectedEmployee(
-                                                                                employee
-                                                                            );
-                                                                            setIsOpen(
-                                                                                false
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            employee
-                                                                        }
-                                                                    </li>
-                                                                )
-                                                            )
-                                                        ) : (
-                                                            <li className="px-4 py-2 text-gray-500">
-                                                                No results found
-                                                            </li>
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {/* recevier name */}
-                                    <div className="flex mt-[20px]">
-                                        <div className="ml-[5px]">
-                                            <h4>Recevier</h4>
-                                        </div>
-                                        <div>
-                                            <input
-                                                type="text"
-                                                className="w-[700px] ml-[139px] h-[40px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                                placeholder="Selection terms"
-                                                value={receiver}
-                                                onChange={(e) =>
-                                                    setReceiver(e.target.value)
-                                                }
-                                            />
-                                        </div>
-                                    </div>
-                                    {/* subject */}
-                                    <div className="flex mt-[20px]">
-                                        <div className="ml-[5px]">
-                                            <h4>Subject</h4>
-                                        </div>
-                                        <div>
-                                            <input
-                                                type="text"
-                                                className="w-[700px] ml-[139px] h-[40px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                                placeholder="Selection terms"
-                                                value={subject}
-                                                onChange={(e) =>
-                                                    setSubject(e.target.value)
-                                                }
-                                            />
-                                        </div>
-                                    </div>
-                                    {/* Subject */}
-                                    {/* Email address  */}
-                                    <div className="flex mt-[20px]">
-                                        <div className="ml-[5px]">
-                                            <h4>Selection terms *</h4>
-                                        </div>
-                                        <div>
-                                            <textarea
-                                                name=""
-                                                rows="6"
-                                                className="w-[700px] ml-[71px]  p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                                placeholder="Message"
-                                                value={message}
-                                                onChange={(e) =>
-                                                    setMessag(e.target.value)
-                                                }
-                                            ></textarea>
-                                        </div>
-                                    </div>
-                                    {/* Address * */}
-
-                                    <div className="w-[850px] flex items-center justify-end mt-[20px] ml-[50px]">
-                                        <button
-                                            type="submit"
-                                            className="px-4 h-[40px] py-2 rounded-md flex items-center justify-center bg-green-500 text-white"
-                                        >
-                                            save
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            className="px-4 h-[40px] py-2 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
-                                            onClick={() => setMessage(false)}
-                                        >
-                                            Close
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            {/* secound */}
-                        </div>
-                    </div>
-                </div>
-            )}
             {addEdit && (
                 <div>
                     <div className="fixed inset-0 z-50 flex items-center justify-center">
                         <div className="fixed inset-0 bg-black opacity-50"></div>
                         <div className="w-[950px] bg-white p-4 rounded-lg shadow-lg z-50 relative max-h-[88vh] overflow-y-auto p-6 no-scrollbar scrollable-containe mt-[80px] mb-[30px]">
-                            <form onSubmit={handleEditSubmit}>
+                            <form>
                                 <div className="sticky">
                                     {/* name */}
                                     <div className="flex mt-5 justify-between">
@@ -558,22 +313,6 @@ const NewMessageOne = () => {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="flex mt-[20px]">
-                                        <div className="ml-[5px]">
-                                            <h4>Recevier</h4>
-                                        </div>
-                                        <div>
-                                            <input
-                                                type="text"
-                                                className="w-[700px] ml-[139px] h-[40px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                                placeholder="Selection terms"
-                                                value={receiver}
-                                                onChange={(e) =>
-                                                    setReceiver(e.target.value)
-                                                }
-                                            />
-                                        </div>
-                                    </div>
                                     {/* subject */}
                                     <div className="flex mt-[20px]">
                                         <div className="ml-[5px]">
@@ -613,13 +352,6 @@ const NewMessageOne = () => {
                                     {/* Address * */}
 
                                     <div className="w-[850px] flex items-center justify-end mt-[20px] ml-[50px]">
-                                        <button
-                                            type="submit"
-                                            className="px-4 h-[40px] py-2 rounded-md flex items-center justify-center bg-green-500 text-white"
-                                        >
-                                            save
-                                        </button>
-
                                         <button
                                             type="button"
                                             className="px-4 h-[40px] py-2 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
@@ -639,4 +371,4 @@ const NewMessageOne = () => {
     );
 };
 
-export default NewMessageOne;
+export default InboxMainOne;

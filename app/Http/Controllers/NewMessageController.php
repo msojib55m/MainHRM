@@ -64,5 +64,16 @@ public function destroy($id)
 
     return response()->json(['message' => 'Deleted successfully']);
 }
+public function SccenNow(Request $request, $id)
+{
+    $term = NewMessageTerm::findOrFail($id);
+    
+    if ($request->has('status')) {
+        $term->status = $request->status;
+        $term->save();
+        return response()->json(['message' => 'Status updated successfully']);
+    }
 
+    return response()->json(['message' => 'No status provided'], 400);
+}
 }

@@ -283,6 +283,7 @@ Route::post('/selection-terms', [NewMessageController::class, 'store']);
 Route::get('/selection-terms', [NewMessageController::class, 'index']);
 Route::put('/selection-terms/{id}', [NewMessageController::class, 'update']);
 Route::delete('/selection-terms/{id}', [NewMessageController::class, 'destroy']);
+Route::put('/selection-terms/{id}', [NewMessageController::class, 'SccenNow']);
 
 
 
