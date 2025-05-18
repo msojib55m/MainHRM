@@ -65,4 +65,9 @@ class EmployeePerformanceController extends Controller
         return response()->json(['message' => 'Performance deleted successfully'], 200);
     }
     // delete Performance  now
+    public function count()
+   {
+       $count = EmployParformance::count(); // total row count
+       return response()->json(['count' => $count]);
+   }
 }

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";
 import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
+
 // fontawesome Icon start
 // custome Image
 import {
@@ -491,6 +493,21 @@ const Heder = () => {
         return () => clearInterval(interval);
     }, [index]); // `index` পরিবর্তন হলে useEffect পুনরায় চলবে
     // hover background now
+
+    // count Employe now
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/EmployeCount")
+            .then((response) => {
+                setCount(response.data.count);
+            })
+            .catch((error) => {
+                console.error("Error fetching message count:", error);
+            });
+    }, []);
+
     return (
         <>
             <Helmet>
@@ -517,12 +534,12 @@ const Heder = () => {
                                 <img
                                     id="image1"
                                     src={pictures[pictureIdx]}
-                                    alt=""
-                                    className={`${
+                                    alt="Logo"
+                                    className={`cursor-pointer ${
                                         nabVarOpen
-                                            ? "w-[156px]  h-[40px] w-[136px] mt-[5px]"
+                                            ? "w-[156px] h-[40px] mt-[5px]"
                                             : "w-[30px] h-[40px] mt-[5px]"
-                                    }  `}
+                                    }`}
                                 />
                             </div>
                         </div>
@@ -899,7 +916,7 @@ const Heder = () => {
                                                 Total employee
                                             </p>
                                             <h3 className="mb-0 font-bold">
-                                                29
+                                                {count}
                                             </h3>
                                         </div>
                                         <div>

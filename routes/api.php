@@ -91,6 +91,7 @@ use App\Http\Controllers\EmployeePerformanceController;
 Route::post('/EmployeePerformanceOne', [EmployeePerformanceController::class, 'store']);
 Route::get('/EmployeesPerformanceTwo', [EmployeePerformanceController::class, 'index']);
 Route::put('/update-performance/{id}', [EmployeePerformanceController::class, 'update']);
+Route::get('/EmployeCount', [EmployeePerformanceController::class, 'count']);
 
 // routes/api.php
 Route::delete('delete-performance/{id}', [EmployeePerformanceController::class, 'destroy']);
