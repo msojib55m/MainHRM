@@ -45,9 +45,12 @@ Route::get('AllEmployeName', [AuthController::class, 'AllEmploye']);
 Route::post('/attendance', [AttendanceController::class, 'store']);
 
 
-
 Route::post('/upload', [FileUploadController::class, 'upload']);
 
+// Attendance Monthly
+use App\Http\Controllers\AttendanceControllerMonthly;
+
+Route::post('/attendanceMonthly', [AttendanceControllerMonthly::class, 'store']);
 
 
 // Department start

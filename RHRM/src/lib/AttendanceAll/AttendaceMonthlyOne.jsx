@@ -174,9 +174,36 @@ const AttendaceMonthlyOne = () => {
         };
     }, []);
     // time Ends Ends
+    // loading add now
+    const [loading, setLoading] = useState(false);
+    // data to send now laravel
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            employee_name: selectedEmployee,
+            year: selectedYear,
+            month: selectedMonth,
+            time_in: selectedTime,
+            time_out: selectedTimeEnd,
+        };
+        setLoading(true); // Start loading
+        try {
+            const res = await axios.post(
+                "http://127.0.0.1:8000/api/attendanceMonthly",
+                payload
+            );
+        } catch (err) {
+            console.error(err);
+            alert("Error submitting attendance");
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
+
     return (
         <div>
-            <div className="p-4  bg-white rounded-lg h-[auto] w-[auto] mt-[20px] shadow-[0px_9px_26px_0px_#00000024]">
+            <div className="p-4  bg-white rounded-lg h-[auto] w-[auto] mt-[20px] shadow-[0px_9px_26px_0px_#00000024] ">
                 <div className="flex justify-between items-center">
                     <div className="text-lg font-semibold mb-0">
                         Take attendance
@@ -185,20 +212,16 @@ const AttendaceMonthlyOne = () => {
                 <div className="mt-[10px]">
                     <hr />
                 </div>
-                <div className="card-body p-6 bg-white shadow rounded-lg ">
-                    <form
-                        id="attendance"
-                        action=""
-                        method="POST"
-                        encType="multipart/form-data"
-                    >
+                <div className=" p-4 bg-white shadow rounded-lg ">
+                    <form onSubmit={handleSubmit}>
                         {/* Employee Select */}
-                        <div className="flex mt-5 justify-between">
-                            <div>
-                                <h4> employee name </h4>
+                        <div className="flex flex-col md:flex-row md:items-center mt-5 justify-between">
+                            <div className="mb-2 md:mb-0 md:mr-4 font-semibold text-gray-700">
+                                Employee Name
+                                <span className="text-red-500">*</span>
                             </div>
                             <div
-                                className=" w-[70rem] relative ml-[80px]"
+                                className=" relative w-full md:w-[50rem]"
                                 ref={dropdownRef}
                             >
                                 {/* Select Box */}
@@ -319,11 +342,13 @@ const AttendaceMonthlyOne = () => {
                         </div>
 
                         {/* Month Select */}
-                        <div className="flex mt-5 justify-between">
+                        <div className="flex flex-col md:flex-row md:items-center mt-5 justify-between">
                             {/* Select Box */}
-                            <div>Month *</div>
+                            <div className="mb-2 md:mb-0 md:mr-4 font-semibold text-gray-700">
+                                Month <span className="text-red-500">*</span>
+                            </div>
                             <div
-                                className="relative w-[70rem]"
+                                className="relative w-full md:w-[50rem]"
                                 ref={dropdownRefMonth}
                             >
                                 <div
@@ -354,13 +379,13 @@ const AttendaceMonthlyOne = () => {
                         </div>
 
                         {/* Time In */}
-                        <div className="flex mt-5 justify-between">
-                            <label className="block font-semibold text-gray-700">
-                                Time in <span className="text-red-500">*</span>
+                        <div className="flex flex-col md:flex-row md:items-center mt-5 justify-between">
+                            <label className="mb-2 md:mb-0 md:mr-4 font-semibold text-gray-700">
+                                Time In <span className="text-red-500">*</span>
                             </label>
 
                             <div
-                                className="relative w-[70rem]"
+                                className="relative w-full md:w-[50rem]"
                                 ref={dropdownRefTimeStart}
                             >
                                 <input
@@ -394,13 +419,13 @@ const AttendaceMonthlyOne = () => {
                         </div>
 
                         {/* Time Out */}
-                        <div className="flex mt-5 justify-between">
-                            <label className="block font-semibold text-gray-700">
-                                Time in <span className="text-red-500">*</span>
+                        <div className="flex flex-col md:flex-row md:items-center mt-5 justify-between">
+                            <label className="mb-2 md:mb-0 md:mr-4 font-semibold text-gray-700">
+                                Time Out <span className="text-red-500">*</span>
                             </label>
 
                             <div
-                                className="relative w-[70rem]"
+                                className="relative w-full md:w-[50rem]"
                                 ref={dropdownRefEnd}
                             >
                                 <input
@@ -436,11 +461,62 @@ const AttendaceMonthlyOne = () => {
                             <button
                                 type="submit"
                                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                                disabled={loading}
                             >
-                                Submit
+                                {loading ? (
+                                    <div className="flex items-center">
+                                        <svg
+                                            className="animate-spin h-5 w-5 mr-2 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            ></circle>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v8H4z"
+                                            ></path>
+                                        </svg>
+                                        Processing...
+                                    </div>
+                                ) : (
+                                    "Submit"
+                                )}
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+            {/* footer */}
+            <div className="relative">
+                <div>
+                    <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ml-[0px]">
+                        <div className="flex items-center justify-between pr-[20px] pl-[20px]">
+                            <div className="">
+                                <h1 className="mt-[20px]">
+                                    © 2025 BDTASK , All Rights Reserved.
+                                </h1>
+                            </div>
+                            <div className="mt-[20px]">
+                                <div className="flex">
+                                    <div>
+                                        <h1>Designed by:</h1>
+                                    </div>
+                                    <div className="ml-[10px] text-[blue]">
+                                        <p className="">Sojib</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </div>

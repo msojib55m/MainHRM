@@ -32,6 +32,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/Contextsprovider";
 import axiosClient from "../axiosClient";
 
+import AttendaceMonthlyOne from "../lib/AttendanceAll/AttendaceMonthlyOne";
 // try navbar toggle
 // try navbar toggle
 // show navbar
@@ -675,258 +676,43 @@ const AttendanceMonthly = () => {
                 </nav>
                 <Outlet />
                 {/* navbar Ends */}
+                <div className="">
+                    <div
+                        class={`${
+                            nabVarOpen
+                                ? "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[60vw] md:[left:35%] md1:w-[64vw] md1:[left:33%] md2:w-[65vw] md2:[left:33%] md3:w-[66vw] md3:[left:30%] md4:w-[66vw] md4:[left:28%] md5:w-[66vw] md5:[left:30%] lg:w-[69vw] lg:[left:27%] lg2:w-[72vw] lg2:[left:25%] lg3:w-[72vw] lg3:[left:23%] xl1:w-[72vw] xl1:[left:20%] xl:w-[72vw] xl:[left:22%] xxll:w-[73vw] xxll:[left:18%]  xxl1:w-[75vw]  xxl1:[left:20%] xxl2:w-[77vw] xxl2:[left:16%]  "
+                                : "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[83vw] md:[left:12%] md1:w-[83vw] md1:[left:12%] md2:w-[83vw] md2:[left:12%] md3:w-[83vw] md3:[left:12%] md4:w-[83vw] md4:[left:12%] md5:w-[83vw] md5:[left:12%] lg:w-[83vw] lg:[left:12%] lg2:w-[82vw] lg2:[left:12%] lg3:w-[82vw] lg3:[left:12%] xl1:w-[82vw] xl1:[left:12%] xl:w-[82vw] xl:[left:12%] xxll:w-[82vw] xxll:[left:12%]  xxl1:w-[87vw]  xxl1:[left:7%] xxl2:w-[87vw] xxl2:[left:7%]"
+                        } duration-300 no-scrollbar `}
+                    >
+                        <div className=" sticky mt-[100px] h-[80px] p-2 z-10 flex items-start justify-between bg-[white] rounded-[12px]">
+                            <div className="flex items-center justify-between w-full h-[50px] pr-[10px] pl-[10px] relative">
+                                <div className="flex space-x-4 mt-[20px]">
+                                    {links.map((link) => (
+                                        <button
+                                            key={link.id}
+                                            onClick={() => {
+                                                setActive(link.id);
+                                                navigate(link.url);
+                                            }}
+                                            className={`px-4 py-2 rounded-md transition ${
+                                                active === link.id
+                                                    ? "bg-green-200 text-black"
+                                                    : "bg-gray-300 text-black"
+                                            }`}
+                                        >
+                                            {link.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <AttendaceMonthlyOne />
+                    </div>
+                </div>
             </div>
 
             {/* menu */}
-            <div className="">
-                <div
-                    // fixed w-full h-full  mt-[67px] ml-[251px] bg-gray-300 overflow-y-auto
-                    className={`${
-                        nabVarOpen
-                            ? " fixed w-full h-full mt-[67px] ml-[251px] bg-gray-300 overflow-y-auto"
-                            : "fixed w-full h-full mt-[67px] ml-[80px] bg-gray-300"
-                    } duration-300 `}
-                >
-                    <div className=" fixed ml-[20px] mt-[20px] bg-[white] h[100px] w-[100%]">
-                        <div className="flex space-x-4 p-4">
-                            {links.map((link) => (
-                                <button
-                                    key={link.id}
-                                    onClick={() => {
-                                        setActive(link.id);
-                                        navigate(link.url);
-                                    }}
-                                    className={`px-4 py-2 rounded-md transition ${
-                                        active === link.id
-                                            ? "bg-green-200 text-black"
-                                            : "bg-gray-300 text-black"
-                                    }`}
-                                >
-                                    {link.name}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    {/* w-[251px] h-auto shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] pr-[10px] pl-[10px]   bg-white duration-300 NabarSlidbar overflow-x-hidden overflow-y-scroll h-full  bg-[#fff] !fixed no-scrollbar */}
-                    <div
-                        className={`${
-                            nabVarOpen
-                                ? "fixed left-[270px] top-[173px] bg-white w-full   md:max-w-[66%]    lg:max-w-[74%] lg1:max-w-[76%] xl2:max-w-[76%] xl:max-w-[77%] xxl:max-w-[78%] xxl1:max-w-[80%]     shadow-md h-auto min-h-[300px  overflow-y-scroll h-[400px]"
-                                : "fixed left-[100px] top-[173px] bg-white  w-full sm:max-w-[80%] md:max-w-[85%] lg:max-w-[86%] lg1:max-w-[90%] xl2:max-w-[90%] xl:max-w-[90%] xxl:max-w-[85%] xxl1:max-w-[91%] min-h-[300px] h-auto shadow-md overflow-y-scroll h-[400px]"
-                        } duration-300 `}
-                    >
-                        <div className="">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h6 className="text-lg font-semibold mb-0 ml-[30px] mt-[15px]">
-                                        Take attendance
-                                    </h6>
-                                </div>
-                            </div>
-                            <div className="mt-[10px]">
-                                <hr />
-                            </div>
-                            <div className="card-body p-6 bg-white shadow rounded-lg ">
-                                <form
-                                    id="attendance"
-                                    action=""
-                                    method="POST"
-                                    encType="multipart/form-data"
-                                >
-                                    <input
-                                        type="hidden"
-                                        name="_token"
-                                        value="n8tp1sp5d3riVPKkWH1Rd9TmhW6RBOqD3Av2q3hc"
-                                        autoComplete="off"
-                                    />
 
-                                    {/* Employee Select */}
-                                    <div className="mb-4">
-                                        <label
-                                            htmlFor="employee_id"
-                                            className="block font-semibold text-gray-700"
-                                        >
-                                            Employee{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <select
-                                            name="employee_id"
-                                            id="employee_id"
-                                            required
-                                            className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-200"
-                                        >
-                                            <option value="" disabled selected>
-                                                Select one
-                                            </option>
-                                            <option value="1">
-                                                Honorato Imogene Curry Terry
-                                            </option>
-                                            <option value="2">
-                                                Maisha Lucy Zamora Gonzales
-                                            </option>
-                                            <option value="3">
-                                                Amy Aphrodite Zamora Peck
-                                            </option>
-                                            {/* More options here */}
-                                        </select>
-                                    </div>
-
-                                    {/* Year Select */}
-                                    <div className="mb-4">
-                                        <label className="block font-semibold text-gray-700">
-                                            Year{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <select
-                                            name="year"
-                                            required
-                                            className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-200"
-                                        >
-                                            <option value="" disabled selected>
-                                                Select one
-                                            </option>
-                                            {[...Array(30)].map((_, i) => {
-                                                const year = 2025 - i;
-                                                return (
-                                                    <option
-                                                        key={year}
-                                                        value={year}
-                                                    >
-                                                        {year}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
-                                    </div>
-
-                                    {/* Month Select */}
-                                    <div className="mb-4">
-                                        <label className="block font-semibold text-gray-700">
-                                            Month{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <select
-                                            name="month"
-                                            required
-                                            className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-200"
-                                        >
-                                            <option value="" disabled selected>
-                                                Select one
-                                            </option>
-                                            {[
-                                                "January",
-                                                "February",
-                                                "March",
-                                                "April",
-                                                "May",
-                                                "June",
-                                                "July",
-                                                "August",
-                                                "September",
-                                                "October",
-                                                "November",
-                                                "December",
-                                            ].map((month, index) => (
-                                                <option
-                                                    key={index + 1}
-                                                    value={index + 1}
-                                                >
-                                                    {month}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    {/* Time In */}
-                                    <div className="mb-4">
-                                        <label
-                                            htmlFor="in_time"
-                                            className="block font-semibold text-gray-700"
-                                        >
-                                            Time in{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="time"
-                                            id="in_time"
-                                            name="in_time"
-                                            required
-                                            className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-200"
-                                        />
-                                    </div>
-
-                                    {/* Time Out */}
-                                    <div className="mb-4">
-                                        <label
-                                            htmlFor="out_time"
-                                            className="block font-semibold text-gray-700"
-                                        >
-                                            Time out{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="time"
-                                            id="out_time"
-                                            name="out_time"
-                                            required
-                                            className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-200"
-                                        />
-                                    </div>
-
-                                    {/* Submit Button */}
-                                    <div className="text-right">
-                                        <button
-                                            type="submit"
-                                            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-                                        >
-                                            Submit
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* footer start */}
-                {/* {`${
-                            nabVarOpen
-                                ? "fixed left-[270px] top-[173px] bg-white w-full   md:max-w-[66%]    lg:max-w-[74%] lg1:max-w-[76%] xl2:max-w-[76%] xl:max-w-[77%] xxl:max-w-[78%] xxl1:max-w-[80%]     shadow-md h-auto min-h-[300px  overflow-y-scroll h-[400px]"
-                                : "fixed left-[100px] top-[173px] bg-white  w-full sm:max-w-[80%] md:max-w-[85%] lg:max-w-[86%] lg1:max-w-[90%] xl2:max-w-[90%] xl:max-w-[90%] xxl:max-w-[85%] xxl1:max-w-[91%] min-h-[300px] h-auto shadow-md overflow-y-scroll h-[400px]"
-                        } duration-300 `} */}
-                {/* "fixed bottom-0 left-[250px] w-[calc(100%-250px)] bg-gray-100 py-4 print:hidden" */}
-                <footer
-                    className={`${
-                        nabVarOpen
-                            ? "fixed bottom-0 left-[250px] w-[calc(100%-250px)] bg-gray-100 py-4 print:hidden"
-                            : "fixed bottom-0 left-[80px] w-[calc(100%-80px)] bg-gray-100 py-4 print:hidden"
-                    } duration-300 `}
-                >
-                    <div className="container mx-auto flex items-center justify-between px-4">
-                        <div className="text-gray-600">
-                            © 2025 BDTASK, All Rights Reserved.
-                        </div>
-                        <div className="text-gray-600">
-                            Designed by:
-                            <a
-                                href="#"
-                                className="text-blue-500 hover:text-blue-600"
-                            >
-                                Bdtask
-                            </a>
-                        </div>
-                    </div>
-                </footer>
-            </div>
             {/* footer Ends */}
         </>
     );
