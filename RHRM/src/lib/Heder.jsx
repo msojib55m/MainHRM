@@ -507,7 +507,44 @@ const Heder = () => {
                 console.error("Error fetching message count:", error);
             });
     }, []);
-
+    // Today attendance
+    const [countAttendance, setCountAttendance] = useState(0);
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/AttendanceCount")
+            .then((response) => {
+                setCountAttendance(response.data.countAttendance);
+            })
+            .catch((error) => {
+                console.error("Error fetching message Attendance:", error);
+            });
+    }, []);
+    const [leaveRequests, setLeaveRequests] = useState([]);
+    // leave application now
+    const [countleave, setCountleave] = useState(0);
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/LeaveApllicationId")
+            .then((response) => {
+                setCountleave(response.data.countleave);
+            })
+            .catch((error) => {
+                console.error(
+                    "Error fetching message Leave Apllication:",
+                    error
+                );
+            });
+    }, []);
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/leaveRequests") // ✅ Laravel API route
+            .then((response) => {
+                setLeaveRequests(response.data);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch leave requests:", error);
+            });
+    }, []);
     return (
         <>
             <Helmet>
@@ -962,7 +999,7 @@ const Heder = () => {
                                                 Today presents
                                             </p>
                                             <h3 className="mb-0 font-bold">
-                                                1
+                                                {countAttendance}
                                             </h3>
                                         </div>
                                         <div>
@@ -1080,7 +1117,7 @@ const Heder = () => {
                                                 Today leave
                                             </p>
                                             <h3 className="mb-0 font-bold">
-                                                6
+                                                {countleave}
                                             </h3>
                                         </div>
                                         <div>
@@ -1179,111 +1216,51 @@ const Heder = () => {
                         >
                             <div>
                                 <div className="p-[15px]">
-                                    <h5 class="m-0 text-lg font-semibold">
+                                    <h5 className="m-0 text-lg font-semibold">
                                         Leave Application
                                     </h5>
                                 </div>
                                 <hr />
-                                <div className="flex justify-between items-center border-b px-4 py-3">
-                                    <div className="flex items-start gap-3">
-                                        <img
-                                            className="rounded-lg w-12 h-12"
-                                            src="https://www.shutterstock.com/image-photo/programmer-people-working-laptops-smartphones-600nw-2473384115.jpg"
-                                            alt=""
-                                        />
-                                        <div>
-                                            <p className="mb-2 leading-none text-lg font-semibold text-gray-900">
-                                                Maisha Lucy Zamora Gonzales
-                                            </p>
-                                            <p className="mb-2 leading-none text-sm font-normal text-gray-600"></p>
-                                            <p className="mb-0 leading-none text-sm font-medium text-gray-700">
-                                                Reason : efqwefasdfasf
-                                            </p>
+
+                                {leaveRequests.length === 0 ? (
+                                    <p className="text-center text-gray-500 py-4">
+                                        No requests found.
+                                    </p>
+                                ) : (
+                                    leaveRequests.slice(0, 5).map((request) => (
+                                        <div
+                                            key={request.id}
+                                            className="flex justify-between items-center border-b px-4 py-3"
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <img
+                                                    className="rounded-lg w-12 h-12"
+                                                    src={request.image}
+                                                    alt={request.name}
+                                                />
+                                                <div>
+                                                    <p className="mb-2 leading-none text-lg font-semibold text-gray-900">
+                                                        {request.name ||
+                                                            "No Name"}
+                                                    </p>
+                                                    <p className="mb-0 leading-none text-sm font-medium text-gray-700">
+                                                        Reason: {request.reason}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="bg-green-100 w-[90px] rounded-lg p-1">
+                                                <p className="mb-0 text-sm font-semibold text-green-700 text-center">
+                                                    Approved
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="bg-green-100 w-[90px] rounded-lg p-1">
-                                        <p className="mb-0 text-sm font-semibold text-green-700 text-center">
-                                            Approved
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center border-b px-4 py-3">
-                                    <div className="flex items-start gap-3">
-                                        <img
-                                            className="rounded-lg w-12 h-12"
-                                            src="https://static.vecteezy.com/system/resources/thumbnails/002/214/644/small/web-designer-and-programmer-free-vector.jpg"
-                                            alt=""
-                                        />
-                                        <div>
-                                            <p className="mb-2 leading-none text-lg font-semibold text-gray-900">
-                                                Maisha Lucy Zamora Gonzales
-                                            </p>
-                                            <p className="mb-2 leading-none text-sm font-normal text-gray-600"></p>
-                                            <p className="mb-0 leading-none text-sm font-medium text-gray-700">
-                                                Reason : efqwefasdfasf
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-green-100 w-[90px] rounded-lg p-1">
-                                        <p className="mb-0 text-sm font-semibold text-green-700 text-center">
-                                            Approved
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center border-b px-4 py-3">
-                                    <div className="flex items-start gap-3">
-                                        <img
-                                            className="rounded-lg w-12 h-12"
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFRD7tqI01rFcJySc3ogy-dAqUqs_RQlrz2k2X_ibn5ogwXIkSiCDq5ut6Xgs71ewUSa8&usqp=CAU"
-                                            alt=""
-                                        />
-                                        <div>
-                                            <p className="mb-2 leading-none text-lg font-semibold text-gray-900">
-                                                Maisha Lucy Zamora Gonzales
-                                            </p>
-                                            <p className="mb-2 leading-none text-sm font-normal text-gray-600"></p>
-                                            <p className="mb-0 leading-none text-sm font-medium text-gray-700">
-                                                Reason : efqwefasdfasf
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-green-100 w-[90px] rounded-lg p-1">
-                                        <p className="mb-0 text-sm font-semibold text-green-700 text-center">
-                                            Approved
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center border-b px-4 py-3">
-                                    <div className="flex items-start gap-3">
-                                        <img
-                                            className="rounded-lg w-12 h-12"
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMBW3P9WwRI9_sHHQiIr5JnZcpn6T1C_E9gxgwnDaqDz7IYpdGqT8tHmLmkmVaWkU6piM&usqp=CAU"
-                                            alt=""
-                                        />
-                                        <div>
-                                            <p className="mb-2 leading-none text-lg font-semibold text-gray-900">
-                                                Maisha Lucy Zamora Gonzales
-                                            </p>
-                                            <p className="mb-2 leading-none text-sm font-normal text-gray-600"></p>
-                                            <p className="mb-0 leading-none text-sm font-medium text-gray-700">
-                                                Reason : efqwefasdfasf
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-green-100 w-[90px] rounded-lg p-1">
-                                        <p className="mb-0 text-sm font-semibold text-green-700 text-center">
-                                            Approved
-                                        </p>
-                                    </div>
-                                </div>
+                                    ))
+                                )}
+
                                 <div className="py-3">
-                                    <a
-                                        href=""
-                                        className={`${
-                                            nabVarOpen
-                                                ? "flex gap-1 items-center justify-center leading-[2rem] text-sm font-semibold text-green-600 md:text-center"
-                                                : "flex gap-1 items-center justify-center leading-[2rem] text-sm font-semibold text-green-600 md:text-center"
-                                        }`}
+                                    <Link
+                                        to="/leave/application" // <-- এখানে আপনি যে রাউটে যেতে চান সেটি দিন
+                                        className="flex gap-1 items-center justify-center leading-[2rem] text-sm font-semibold text-green-600"
                                     >
                                         See All Request
                                         <svg
@@ -1300,7 +1277,7 @@ const Heder = () => {
                                                 strokeLinejoin="round"
                                             ></path>
                                         </svg>
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -1494,6 +1471,7 @@ const Heder = () => {
                                 </div>
                                 {/* 4 card */}
                             </div>
+
                             <div class="py-3">
                                 <a
                                     href=""

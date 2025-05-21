@@ -40,15 +40,38 @@ class LeaveApplicationController extends Controller
         return response()->json(LeaveApplication::all());
     }
     public function destroy($id)
-{
-    $leave = LeaveApplication::find($id);
+    {
+        $leave = LeaveApplication::find($id);
+        
+        if (!$leave) {
+            return response()->json(['message' => 'Leave application not found'], 404);
+        }
     
-    if (!$leave) {
-        return response()->json(['message' => 'Leave application not found'], 404);
+        $leave->delete();
+    
+        return response()->json(['message' => 'Leave application deleted successfully']);
     }
+ 
+    public function AllLeveShowHeader()
+    {
+        $leaveApplications = LeaveApplication::all()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->employee_name,
+                'reason' => $item->reason,
+                'status' => 'Pending', // optional
+                'image' => $item->file_path ? asset('storage/' . $item->file_path) : null,
+            ];
+        });
+    
+        return response()->json($leaveApplications);
+    }
+      public function AllLeveShowNumber()
+    {
+        $countleave = LeaveApplication::count();
 
-    $leave->delete();
-
-    return response()->json(['message' => 'Leave application deleted successfully']);
-}
+        return response()->json([
+            'countleave' => $countleave
+        ]);
+    }
 }

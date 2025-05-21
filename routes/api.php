@@ -43,6 +43,7 @@ Route::get('AllEmployeName', [AuthController::class, 'AllEmploye']);
 
 
 Route::post('/attendance', [AttendanceController::class, 'store']);
+Route::get('/AttendanceCount', [AttendanceController::class, 'countAttendance']);
 
 
 Route::post('/upload', [FileUploadController::class, 'upload']);
@@ -138,6 +139,8 @@ Route::get('/employeesId', [AuthController::class, 'EmployessId']);
 // route 
 Route::get('/salariesName', [AuthController::class, 'index']);
 Route::get('/EmployNameAddNow', [AuthController::class, 'NewMessage']);
+Route::get('/leaveRequests', [LeaveApplicationController::class, 'AllLeveShowHeader']);
+Route::get('/LeaveApllicationId', [LeaveApplicationController::class, 'AllLeveShowNumber']);
 
 
 

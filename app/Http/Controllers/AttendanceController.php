@@ -23,5 +23,12 @@ public function store(Request $request)
 
     return response()->json(['message' => 'Attendance saved successfully'], 201);
 }
+   public function countAttendance()
+    {
+        $count = Attendance::count();
 
+        return response()->json([
+            'countAttendance' => $count
+        ]);
+    }
 }

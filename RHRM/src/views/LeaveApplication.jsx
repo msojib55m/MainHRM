@@ -393,9 +393,11 @@ const LeaveApplication = () => {
             setFormData({ ...formData, [e.target.name]: e.target.value });
         }
     };
+    const [loading, setLoading] = useState(false);
+
     const LeaveApplicationSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const formDataToSend = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
             formDataToSend.append(key, value);
@@ -409,10 +411,15 @@ const LeaveApplication = () => {
                     headers: { "Content-Type": "multipart/form-data" },
                 }
             );
-
-            alert("Application submitted successfully!");
+            setLeaveHoliday(false);
         } catch (error) {
-            console.error("Error submitting the form", error);
+            if (error.response && error.response.status === 422) {
+                console.error("Validation Errors:", error.response.data.errors);
+            } else {
+                console.error("Error submitting the form", error);
+            }
+        } finally {
+            setLoading(false);
         }
     };
     // ডাটা পাঠানোর জন্য কয়েকটা ধাপ সাজানো হলো উপরে
@@ -950,7 +957,6 @@ const LeaveApplication = () => {
                                                     />
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    {" "}
                                                     <label className="w-40 font-medium">
                                                         Leave type*
                                                     </label>
@@ -964,7 +970,6 @@ const LeaveApplication = () => {
                                                     />
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    {" "}
                                                     <label className="w-40 font-medium">
                                                         From date *
                                                     </label>
@@ -978,7 +983,6 @@ const LeaveApplication = () => {
                                                     />
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    {" "}
                                                     <label className="w-40 font-medium">
                                                         End date *
                                                     </label>
@@ -992,7 +996,6 @@ const LeaveApplication = () => {
                                                     />
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    {" "}
                                                     <label className="w-40 font-medium">
                                                         Total days
                                                     </label>
@@ -1040,7 +1043,7 @@ const LeaveApplication = () => {
                                                     </label>
                                                     <input
                                                         type="number"
-                                                        placeholder="Total days"
+                                                        placeholder="Reson"
                                                         className="w-[600px] h-[40px] border border-black rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-green-300 focus:border-green-300"
                                                         name="reason"
                                                         onChange={handleChange}
@@ -1061,9 +1064,36 @@ const LeaveApplication = () => {
                                                     </button>
                                                     <button
                                                         type="submit"
-                                                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
+                                                        disabled={loading}
                                                     >
-                                                        Save
+                                                        {loading ? (
+                                                            <div className="flex items-center">
+                                                                <svg
+                                                                    className="animate-spin h-5 w-5 mr-2 text-white"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <circle
+                                                                        className="opacity-25"
+                                                                        cx="12"
+                                                                        cy="12"
+                                                                        r="10"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="4"
+                                                                    ></circle>
+                                                                    <path
+                                                                        className="opacity-75"
+                                                                        fill="currentColor"
+                                                                        d="M4 12a8 8 0 018-8v8H4z"
+                                                                    ></path>
+                                                                </svg>
+                                                                Processing...
+                                                            </div>
+                                                        ) : (
+                                                            "Save"
+                                                        )}
                                                     </button>
                                                 </div>
                                             </div>
@@ -1161,9 +1191,7 @@ const LeaveApplication = () => {
                                             <th className="border border-gray-300 px-2 py-1 min-w-[60px]">
                                                 Apply Date
                                             </th>
-                                            <th className="border border-gray-300 px-2 py-1 min-w-[60px]">
-                                                Start Date
-                                            </th>
+
                                             <th className="border border-gray-300 px-2 py-1 min-w-[60px]">
                                                 End Date
                                             </th>
@@ -1218,9 +1246,7 @@ const LeaveApplication = () => {
                                                         <td className="border border-gray-300 px-2 py-1">
                                                             {leave.from_date}
                                                         </td>
-                                                        <td className="border border-gray-300 px-2 py-1">
-                                                            {leave.start_date}
-                                                        </td>
+
                                                         <td className="border border-gray-300 px-2 py-1">
                                                             {leave.end_date}
                                                         </td>
