@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import axiosClient from "../axiosClient";
@@ -8,16 +8,17 @@ export default function Login() {
     const passwordRef = useRef();
 
     const { user, setUser, setToken } = useStateContext();
-    // try
-
-    // try
+    // loading add
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
     const Submit = (ev) => {
         ev.preventDefault();
+        setLoading(true);
+        setErrors({});
         const payload = {
             email: emailRef.current.value,
             password: passwordRef.current.value,
         };
-        console.log(payload);
         axiosClient
             .post("/login", payload)
             .then(({ data }) => {
@@ -27,13 +28,17 @@ export default function Login() {
             .catch((err) => {
                 const response = err.response;
                 if (response && response.status === 422) {
-                    console.log(response.data.errors);
+                    setErrors(response.data.errors);
+                    console.log(response.data);
                 }
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
+
     return (
         <>
-            {" "}
             <Helmet>
                 <title>Login</title>
                 <meta name="description" content="Helmet application" />
@@ -68,6 +73,11 @@ export default function Login() {
                                     type="email"
                                     placeholder="Enter Email Address"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.email[0]}
+                                    </p>
+                                )}
                             </div>
 
                             <div class="w-full max-w-sm min-w-[200px] mt-6">
@@ -81,6 +91,11 @@ export default function Login() {
                                     type="password"
                                     placeholder="Enter your Password"
                                 />
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.password[0]}
+                                    </p>
+                                )}
                                 <div className="mt-6">
                                     <a href="" className="float-right">
                                         Forget password
@@ -89,8 +104,35 @@ export default function Login() {
                                 <button
                                     type="submit"
                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-6 w-full"
+                                    disabled={loading}
                                 >
-                                    Sign in
+                                    {loading ? (
+                                        <div className="flex items-center">
+                                            <svg
+                                                className="animate-spin h-5 w-5 mr-2 text-white"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v8H4z"
+                                                ></path>
+                                            </svg>
+                                            Processing...
+                                        </div>
+                                    ) : (
+                                        "Login"
+                                    )}
                                 </button>
                                 <br />
                                 <br />

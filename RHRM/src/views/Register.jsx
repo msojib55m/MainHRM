@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import axiosClient from "../axiosClient";
@@ -10,14 +10,20 @@ export default function register() {
     const passwordRef = useRef();
 
     const { setUser, setToken } = useStateContext();
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const Submit = (ev) => {
         ev.preventDefault();
+        setLoading(true);
+        setErrors({}); // পুরাতন error মুছে ফেলুন
+
         const payload = {
             name: nameRef.current.value,
             email: emailRef.current.value,
             password: passwordRef.current.value,
         };
+
         axiosClient
             .post("/register", payload)
             .then(({ data }) => {
@@ -27,13 +33,16 @@ export default function register() {
             .catch((err) => {
                 const response = err.response;
                 if (response && response.status === 422) {
-                    console.log(response.data.errors);
+                    setErrors(response.data.errors); // Error গুলো স্টেটে সেট করুন
                 }
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
+
     return (
         <>
-            {" "}
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>Register</title>
@@ -69,6 +78,11 @@ export default function register() {
                                     type="text"
                                     placeholder="Enter Your Name"
                                 />
+                                {errors.name && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.name[0]}
+                                    </p>
+                                )}
                             </div>
                             <br />
                             <div class="w-full max-w-sm min-w-[200px]">
@@ -82,6 +96,11 @@ export default function register() {
                                     type="email"
                                     placeholder="Enter Email Address"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.email[0]}
+                                    </p>
+                                )}
                             </div>
 
                             <div class="w-full max-w-sm min-w-[200px] mt-6">
@@ -95,11 +114,43 @@ export default function register() {
                                     type="password"
                                     placeholder="Enter your Password"
                                 />
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.password[0]}
+                                    </p>
+                                )}
                                 <button
                                     type="submit"
                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-6 w-full"
+                                    disabled={loading}
                                 >
-                                    Register
+                                    {loading ? (
+                                        <div className="flex items-center">
+                                            <svg
+                                                className="animate-spin h-5 w-5 mr-2 text-white"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v8H4z"
+                                                ></path>
+                                            </svg>
+                                            Processing...
+                                        </div>
+                                    ) : (
+                                        "Register"
+                                    )}
                                 </button>
                                 <br />
                                 <br />

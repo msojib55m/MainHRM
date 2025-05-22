@@ -23,7 +23,6 @@ const EmployeeSubOne = () => {
         e.preventDefault();
         setLoading(true);
         // Step 1: Check what data is being sent
-        console.log("Submitting form data:", formData);
 
         try {
             const response = await axios.post(
@@ -32,7 +31,6 @@ const EmployeeSubOne = () => {
             );
 
             // Step 2: See the response from backend
-            console.log("Server response:", response.data);
 
             // Step 3: Optional - reset form
             setFormData({
