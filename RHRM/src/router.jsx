@@ -69,6 +69,7 @@ const InboxMain = lazy(() => import("./views/InboxMain.jsx"));
 const CurrencySettingMain = lazy(() =>
     import("./views/CurrencySettingMain.jsx")
 );
+const MailsetepMain = lazy(() => import("./views/MailsetepMain.jsx"));
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -736,6 +737,22 @@ const router = createBrowserRouter([
                     <Suspense fallback={<Loading />}>
                         <PageLoaderWrapper>
                             <CurrencySettingMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    {
+        path: "/Mail/setup",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/Mail/setup",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <MailsetepMain />
                         </PageLoaderWrapper>
                     </Suspense>
                 ),

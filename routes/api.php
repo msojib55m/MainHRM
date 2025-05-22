@@ -308,6 +308,7 @@ Route::get('/currencies', [CurrencyController::class, 'index']);
 Route::put('/currencies/{id}', [CurrencyController::class, 'update']);
 Route::delete('/currencies/{id}', [CurrencyController::class, 'destroy']);
 
-
+use App\Http\Controllers\MailSettingsController;
+Route::post('/update-mail-settings', [MailSettingsController::class, 'update']);
 
 
