@@ -301,7 +301,11 @@ const Heder = () => {
             icon1: faGear,
             name: "Settings",
             icon2: faChevronLeft,
-            links: [{ label: "", path: "/applications" }],
+            links: [
+                { label: "Currency", path: "/Currency/Now" },
+                { label: "Mail setup", path: "/Mail/setup" },
+                { label: "Tax setup", path: "/Tax/setup" },
+            ],
         },
         {
             id: 16,

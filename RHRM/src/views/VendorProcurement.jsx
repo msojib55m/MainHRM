@@ -1,15 +1,3 @@
-// import React from 'react';
-
-// const VendorProcurement = () => {
-//   return (
-//     <div>
-
-//     </div>
-//   );
-// }
-
-// export default VendorProcurement;
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";
@@ -291,7 +279,11 @@ const VendorProcurement = () => {
             icon1: faGear,
             name: "Settings",
             icon2: faChevronLeft,
-            links: [{ label: "", path: "/applications" }],
+            links: [
+                { label: "Currency", path: "/Currency/Now" },
+                { label: "Mail setup", path: "/Mail/setup" },
+                { label: "Tax setup", path: "/Tax/setup" },
+            ],
         },
         {
             id: 16,
