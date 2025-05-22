@@ -302,7 +302,11 @@ Route::put('/selection-terms/{id}', [NewMessageController::class, 'update']);
 Route::delete('/selection-terms/{id}', [NewMessageController::class, 'destroy']);
 Route::put('/selection-terms/{id}', [NewMessageController::class, 'SccenNow']);
 
-
+use App\Http\Controllers\CurrencyController;
+Route::post('/currencies', [CurrencyController::class, 'store']);
+Route::get('/currencies', [CurrencyController::class, 'index']);
+Route::put('/currencies/{id}', [CurrencyController::class, 'update']);
+Route::delete('/currencies/{id}', [CurrencyController::class, 'destroy']);
 
 
 

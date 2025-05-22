@@ -66,6 +66,9 @@ const SetupRuleMain = lazy(() => import("./views/SetupRuleMain.jsx"));
 const NewMessageMain = lazy(() => import("./views/NewMessageMain.jsx"));
 const SentMessageMain = lazy(() => import("./views/SentMessageMain.jsx"));
 const InboxMain = lazy(() => import("./views/InboxMain.jsx"));
+const CurrencySettingMain = lazy(() =>
+    import("./views/CurrencySettingMain.jsx")
+);
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -722,6 +725,24 @@ const router = createBrowserRouter([
             },
         ],
     },
+    // setting start
+    {
+        path: "/Currency/Now",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/Currency/Now",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <CurrencySettingMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // setting start
     // Message Rule one
     {
         path: "/message/new",
