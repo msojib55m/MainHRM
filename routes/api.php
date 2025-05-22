@@ -97,7 +97,17 @@ Route::get('/EmployeesPerformanceTwo', [EmployeePerformanceController::class, 'i
 Route::put('/update-performance/{id}', [EmployeePerformanceController::class, 'update']);
 Route::get('/EmployeCount', [EmployeePerformanceController::class, 'count']);
 
+// EmployeeController
+use App\Http\Controllers\EmployeeSubController;
+
+Route::get('/EmpolySub', [EmployeeSubController::class, 'index']);
+Route::post('/employees', [EmployeeSubController::class, 'store']);
+Route::put('/SubEmpolyEdit/{id}', [EmployeeSubController::class, 'update']);
+Route::delete('/SubEmpolyDelete/{id}', [EmployeeSubController::class, 'destroy']);
+
+
 // routes/api.php
+
 Route::delete('delete-performance/{id}', [EmployeePerformanceController::class, 'destroy']);
 
 

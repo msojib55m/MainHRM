@@ -42,6 +42,8 @@ import axiosClient from "../axiosClient";
 import { motion } from "framer-motion";
 import axios from "axios";
 import MainEmployList from "../lib/MainEmployList";
+// import Employe Sub
+import EmployeeSubOne from "../lib/EmployeeAll/EmployeeSubOne";
 
 // try navbar toggle
 // try navbar toggle
@@ -979,53 +981,6 @@ const EmployeeSub = () => {
     // click Filter
     // Add employee Form
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCountry, setSelectedCountry] = useState("");
-    const [selectedAttendance, setSelectedAttendance] = useState("");
-    const [isCountryDropdownVisible, setIsCountryDropdownVisible] =
-        useState(false);
-    const [isAttendanceDropdownVisible, setIsAttendanceDropdownVisible] =
-        useState(false);
-
-    const countries = [
-        "Bangladesh",
-        "India",
-        "United States",
-        "United Kingdom",
-        "Canada",
-        "Australia",
-        "Germany",
-        "France",
-        "China",
-        "Japan",
-        "Brazil",
-        "Italy",
-        "Spain",
-    ];
-
-    const attendanceOptions = [
-        "Normal Shift General",
-        "General Shift",
-        "Regular Working Days",
-    ];
-
-    const filteredCountries = countries.filter((country) =>
-        country.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const handleCountrySelect = (country) => {
-        setSelectedCountry(country);
-        setIsCountryDropdownVisible(false);
-    };
-
-    const handleAttendanceSelect = (attendanceTime) => {
-        setSelectedAttendance(attendanceTime);
-        setIsAttendanceDropdownVisible(false);
-    };
-
-    const handleInputChange = (event) => {
-        setSearchTerm(event.target.value);
-        setIsCountryDropdownVisible(true);
-    };
 
     const handleOutsideClick = (event) => {
         if (
@@ -1122,6 +1077,7 @@ const EmployeeSub = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
     return (
         <>
             <Helmet>
@@ -2223,191 +2179,8 @@ const EmployeeSub = () => {
                                         </div>
                                         <div className="mt-[20px]">
                                             {/* Add List name */}
-                                            <div className="mt-8 ml-8 shadow-md p-4 bg-white rounded-lg w-[1200px]">
-                                                <h1 className="text-xl font-bold">
-                                                    Basic info:
-                                                </h1>
-                                                <div className="grid grid-cols-2 gap-4 p-4">
-                                                    {/* Left Column */}
-                                                    <div className="flex flex-col gap-4">
-                                                        {[
-                                                            "First name *",
-                                                            "Middle name",
-                                                            "Last name *",
-                                                            "Email",
-                                                            "Phone",
-                                                            "City",
-                                                        ].map((label, idx) => (
-                                                            <div
-                                                                key={idx}
-                                                                className="flex items-center justify-between w-[550px]"
-                                                            >
-                                                                <h1>{label}</h1>
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder={
-                                                                        label
-                                                                    }
-                                                                    className="border border-gray-600 focus:border-green-500 focus:outline-none p-2 rounded h-[40px] w-[400px]"
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                        {/* Country Dropdown */}
-                                                        <div className="flex items-center justify-between w-[550px] relative">
-                                                            <h1 className="text-lg font-semibold">
-                                                                Country
-                                                            </h1>
-                                                            <div
-                                                                className="relative w-[400px]"
-                                                                ref={
-                                                                    dropdownRef
-                                                                }
-                                                            >
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="Select Country"
-                                                                    value={
-                                                                        selectedCountryName
-                                                                    }
-                                                                    readOnly
-                                                                    className="border border-gray-600 focus:border-green-500 focus:outline-none p-2 rounded h-[40px] w-full"
-                                                                    onClick={() =>
-                                                                        setCountryDropdownName(
-                                                                            !countryDropdownName
-                                                                        )
-                                                                    }
-                                                                    onChange={
-                                                                        filterCountriesName
-                                                                    }
-                                                                />
-                                                                {countryDropdownName && (
-                                                                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded shadow-md max-h-40 overflow-y-auto">
-                                                                        <ul>
-                                                                            {filteredCountriesName.map(
-                                                                                (
-                                                                                    country,
-                                                                                    index
-                                                                                ) => (
-                                                                                    <li
-                                                                                        key={
-                                                                                            index
-                                                                                        }
-                                                                                        className="p-2 hover:bg-green-100 cursor-pointer"
-                                                                                        onClick={() => {
-                                                                                            setSelectedCountryName(
-                                                                                                country
-                                                                                            );
-                                                                                            setCountryDropdownName(
-                                                                                                false
-                                                                                            );
-                                                                                        }}
-                                                                                    >
-                                                                                        {
-                                                                                            country
-                                                                                        }
-                                                                                    </li>
-                                                                                )
-                                                                            )}
-                                                                        </ul>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Right Column */}
-                                                    <div className="flex flex-col gap-4">
-                                                        {[
-                                                            "Zip",
-                                                            "Alternate phone",
-                                                            "National id no",
-                                                            "Iqama no",
-                                                            "Passport no",
-                                                            "Driving license no",
-                                                        ].map((label, idx) => (
-                                                            <div
-                                                                key={idx}
-                                                                className="flex items-center justify-between w-[550px]"
-                                                            >
-                                                                <h1>{label}</h1>
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder={
-                                                                        label
-                                                                    }
-                                                                    className="border border-gray-600 focus:border-green-500 focus:outline-none p-2 rounded h-[40px] w-[400px]"
-                                                                />
-                                                            </div>
-                                                        ))}
-
-                                                        {/* Attendance Time Dropdown */}
-                                                        <div
-                                                            className="flex items-center justify-between w-[550px] relative"
-                                                            ref={dropdownRef1}
-                                                        >
-                                                            <h1 className="text-lg font-semibold">
-                                                                Attendance time
-                                                                *
-                                                            </h1>
-                                                            <div className="relative w-[400px]">
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="Select attendance time"
-                                                                    value={
-                                                                        selectedAttendanceName
-                                                                    }
-                                                                    readOnly
-                                                                    className="border border-gray-600 focus:border-green-500 focus:outline-none p-2 rounded h-[40px] w-full"
-                                                                    onClick={() =>
-                                                                        setAttendanceDropdownName(
-                                                                            !attendanceDropdownName
-                                                                        )
-                                                                    }
-                                                                />
-                                                                {attendanceDropdownName && (
-                                                                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded shadow-md max-h-40 overflow-y-auto">
-                                                                        <ul>
-                                                                            {attendanceOptionsName.map(
-                                                                                (
-                                                                                    option,
-                                                                                    index
-                                                                                ) => (
-                                                                                    <li
-                                                                                        key={
-                                                                                            index
-                                                                                        }
-                                                                                        className="p-2 hover:bg-green-100 cursor-pointer"
-                                                                                        onClick={() => {
-                                                                                            setSelectedAttendanceName(
-                                                                                                option
-                                                                                            );
-                                                                                            setAttendanceDropdownName(
-                                                                                                false
-                                                                                            );
-                                                                                        }}
-                                                                                    >
-                                                                                        {
-                                                                                            option
-                                                                                        }
-                                                                                    </li>
-                                                                                )
-                                                                            )}
-                                                                        </ul>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                        <div className="border-b-2 border-dotted border-black w-[550px] "></div>
-                                                        <div className="flex justify-end w-[550px]">
-                                                            <button
-                                                                type="button"
-                                                                className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded"
-                                                            >
-                                                                Next
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div>
+                                                <EmployeeSubOne />
                                             </div>
                                         </div>
                                     </div>
