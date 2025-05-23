@@ -294,7 +294,6 @@ const LeaveWeeklyHoliday = () => {
             links: [
                 { label: "New", path: "/message/new" },
                 { label: "Inbox", path: "/message/new" },
-                { label: "Sent", path: "/message/sent" },
             ],
         },
     ];

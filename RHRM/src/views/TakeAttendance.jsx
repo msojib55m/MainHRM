@@ -283,7 +283,6 @@ const TakeAttendance = () => {
             links: [
                 { label: "Currency", path: "/Currency/Now" },
                 { label: "Mail setup", path: "/Mail/setup" },
-                { label: "Tax setup", path: "/Tax/setup" },
             ],
         },
         {

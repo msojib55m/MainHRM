@@ -91,6 +91,13 @@ const CurrencyOne = () => {
         setStatus(currency.status);
         setEdit(true); // modal open
     };
+    const restClick = () => {
+        setTitle("");
+        setSymbol("");
+        setCountry("");
+        setStatus("active");
+        setCurrency(true);
+    };
     const handleEdit = async (e) => {
         e.preventDefault();
 
@@ -179,7 +186,7 @@ const CurrencyOne = () => {
                             <div className="">
                                 <button
                                     class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
-                                    onClick={() => setCurrency(true)}
+                                    onClick={() => restClick()}
                                 >
                                     <FontAwesomeIcon icon={faCirclePlus} />
                                     <div className="ml-[5px]">Add currency</div>

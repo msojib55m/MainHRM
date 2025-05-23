@@ -1,11 +1,3 @@
-// import React from "react";
-
-// const InboxMain = () => {
-//     return <div></div>;
-// };
-
-// export default InboxMain;
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";
@@ -292,7 +284,6 @@ const InboxMain = () => {
             links: [
                 { label: "Currency", path: "/Currency/Now" },
                 { label: "Mail setup", path: "/Mail/setup" },
-                { label: "Tax setup", path: "/Tax/setup" },
             ],
         },
         {

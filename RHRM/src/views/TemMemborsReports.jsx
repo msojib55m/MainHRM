@@ -1,15 +1,3 @@
-// import React from 'react';
-
-// const TemMemborsReports = () => {
-//   return (
-//     <div>
-
-//     </div>
-//   );
-// }
-
-// export default TemMemborsReports;
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helmet } from "react-helmet";
@@ -294,7 +282,6 @@ const TemMemborsReports = () => {
             links: [
                 { label: "Currency", path: "/Currency/Now" },
                 { label: "Mail setup", path: "/Mail/setup" },
-                { label: "Tax setup", path: "/Tax/setup" },
             ],
         },
         {
