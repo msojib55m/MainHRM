@@ -334,7 +334,8 @@ const InboxMain = () => {
     }, []);
     // Togle or NavTogle now
     // Togle or NavTogle End
-    // attendance now
+    // link to dahsbord
+    const isActive = location.pathname === "/";
 
     return (
         <>
@@ -574,12 +575,22 @@ const InboxMain = () => {
                     </div>
                     <ul>
                         <Link to="/">
-                            <div className="bg-green-100 h-[40px] rounded cursor-pointer">
+                            <div
+                                className={`h-[40px] rounded cursor-pointer ${
+                                    isActive ? "bg-green-100" : ""
+                                }`}
+                            >
                                 <a
                                     href=""
                                     className="flex justify-between mt-[20px]"
                                 >
-                                    <div className="flex items-center justify-between pl-[20px] mt-[7px] w-[130px] text-green-700">
+                                    <div
+                                        className={`flex items-center justify-between pl-[20px] mt-[7px] w-[130px] ${
+                                            isActive
+                                                ? "text-green-700"
+                                                : "text-black"
+                                        }`}
+                                    >
                                         <FontAwesomeIcon
                                             className={`${
                                                 slidvarOpen ? "" : "mt-[4px]"
