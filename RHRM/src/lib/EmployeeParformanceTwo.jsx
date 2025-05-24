@@ -23,16 +23,17 @@ const EmployeeParformanceTwo = () => {
     // Function to filter performances based on search term
     useEffect(() => {
         setFilteredPerformances(
-            performances.filter(
-                (performance) =>
-                    performance.employee_name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
+            performances.filter((performance) => {
+                const name = performance.employee_name || ""; // null হলে empty string নেবে
+                return (
+                    name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     performance.total_score.toString().includes(searchTerm) ||
-                    performance.created_at.includes(searchTerm)
-            )
+                    (performance.created_at || "").includes(searchTerm) // created_at null হলে error আসবে, তাই চেক করা হলো
+                );
+            })
         );
     }, [searchTerm, performances]);
+
     // search Form now
     useEffect(() => {
         const fetchData = async () => {
@@ -41,6 +42,7 @@ const EmployeeParformanceTwo = () => {
                     "http://localhost:8000/api/EmployeesPerformanceTwo"
                 );
                 const data = await response.json();
+
                 setPerformances(data);
             } catch (error) {
                 console.error("Error fetching data:", error);

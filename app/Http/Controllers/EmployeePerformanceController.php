@@ -7,28 +7,26 @@ use App\Models\EmployParformance;
 
 class EmployeePerformanceController extends Controller
 {
-    public function store(Request $request)
-    {
-        // Validate incoming data
-        $validated = $request->validate([
-            'employee_name' => 'required|string|max:255',
-            'total_score' => 'required|numeric',
-        ]);
+public function store(Request $request)
+{
+    $data = new EmployParformance();
+    $data->employee_id = $request->employee_id;
+    $data->employee_name = $request->employee_name; // এটা আছে তো?
+    $data->total_score = $request->total_score;
+    $data->save();
 
-        // Create a new employee performance record in the database
-        $performance = EmployParformance::create([
-            'employee_name' => $validated['employee_name'],
-            'total_score' => $validated['total_score'],
-        ]);
+    return response()->json(['message' => 'Data saved successfully!']);
+}
 
-        // Return a success message
-        return response()->json(['message' => 'Performance data saved successfully!'], 200);
-    }
-    // data all now
+
+
+  
     public function index()
     {
         return response()->json(EmployParformance::all());
     }
+
+
     // data all now
     // updataMethod now
     public function update(Request $request, $id)

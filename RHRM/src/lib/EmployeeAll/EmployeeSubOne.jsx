@@ -12,11 +12,29 @@ const EmployeeSubOne = () => {
         joining_date: "",
         confirm_joining: "",
         status: "",
+        position_id: "",
     });
+    // new
+    const [positions, setPositions] = useState([]);
 
+    useEffect(() => {
+        axios
+            .get("http://127.0.0.1:8000/api/positions") // আপনার পজিশন API ইউআরএল দিন
+            .then((res) => setPositions(res.data))
+            .catch((err) => console.error(err));
+    }, []);
+    // new
+    // const handleChange = (e) => {
+    //     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // };
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
+
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -34,6 +52,7 @@ const EmployeeSubOne = () => {
 
             // Step 3: Optional - reset form
             setFormData({
+                position_id: "",
                 employee_id: "",
                 name: "",
                 email: "",
@@ -62,6 +81,25 @@ const EmployeeSubOne = () => {
 
             <form action="" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Position
+                        </label>
+                        <select
+                            name="position_id"
+                            value={formData.position_id}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        >
+                            <option value="">Select Position</option>
+                            {positions.map((pos) => (
+                                <option key={pos.id} value={pos.id}>
+                                    {pos.position_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Employee ID

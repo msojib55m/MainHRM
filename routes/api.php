@@ -102,6 +102,7 @@ use App\Http\Controllers\EmployeeSubController;
 
 Route::get('/EmpolySub', [EmployeeSubController::class, 'index']);
 Route::post('/employees', [EmployeeSubController::class, 'store']);
+
 Route::put('/SubEmpolyEdit/{id}', [EmployeeSubController::class, 'update']);
 Route::delete('/SubEmpolyDelete/{id}', [EmployeeSubController::class, 'destroy']);
 
@@ -142,6 +143,7 @@ Route::post('/leave-applications', [LeaveApplicationController::class, 'store'])
 Route::get('/leave-applications', [LeaveApplicationController::class, 'index']);
 Route::delete('/leave-applications/{id}', [LeaveApplicationController::class, 'destroy']);
 Route::get('/employees', [AuthController::class, 'getEmployees']);
+
 Route::get('/employeesAdd', [AuthController::class, 'getEmployeesAdd']);
 Route::get('/employeesAddTwo', [AuthController::class, 'getEmployeesAddTwo']);
 // new

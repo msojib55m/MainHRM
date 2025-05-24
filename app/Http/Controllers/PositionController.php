@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Http\Controllers\Api;
 namespace App\Http\Controllers;
 use App\Models\Position;
 use Illuminate\Http\Request;
@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 class PositionController extends Controller
 {
     // all data show now
-    public function index()
+      public function index()
     {
-        return response()->json(Position::all());
+        // সব active পজিশনগুলো নিয়ে আসুন
+        $positions = Position::where('status', 'active')->get(['id', 'position_name']);
+        return response()->json($positions);
     }
+
+
     // data store now
  
     public function store(Request $request)

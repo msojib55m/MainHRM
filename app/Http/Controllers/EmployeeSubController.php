@@ -16,21 +16,26 @@ class EmployeeSubController extends Controller
     return response()->json($employees);
 }
     // data store in mysql
+    public function emplyee()
+{
+    $employees = EmployeeSub::select('id', 'name')->get();
+    return response()->json($employees);
+}
+
 public function store(Request $request)
 {
-    Log::info('Received employee data:', $request->all());
-
     try {
         $validated = $request->validate([
             'employee_id' => 'required',
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:employees_sub,email',
             'mobile' => 'required',
             'dob' => 'required|date',
             'designation' => 'required',
             'joining_date' => 'required|date',
-            'confirm_joining' => 'nullable|date', // ✅ fixed
+            'confirm_joining' => 'nullable|date',
             'status' => 'required|in:active,inactive',
+            'position_id' => 'required|exists:positions,id'
         ]);
 
         $employee = EmployeeSub::create($validated);
@@ -39,11 +44,16 @@ public function store(Request $request)
             'message' => 'Employee stored successfully',
             'data' => $employee
         ]);
-    } catch (\Exception $e) {
-        Log::error('Error while storing employee: '.$e->getMessage());
-        return response()->json(['error' => 'Server error occurred.'], 500);
+    } catch (\Throwable $e) {
+        Log::error('Error storing employee: '.$e->getMessage());
+        return response()->json([
+            'error' => 'Server error occurred',
+            'details' => $e->getMessage()
+        ], 500);
     }
 }
+
+
 
 // update now
 public function update(Request $request, $id)

@@ -95,8 +95,10 @@ const MainEmployList = () => {
             setLoading(false);
         }
     };
+    const [deletingId, setDeletingId] = useState(null);
+
     const handleDelete = async (id) => {
-        setLoading(true);
+        setDeletingId(id);
 
         try {
             await axios.delete(
@@ -107,7 +109,7 @@ const MainEmployList = () => {
         } catch (error) {
             console.error("Delete failed:", error);
         } finally {
-            setLoading(false);
+            setDeletingId(null); // ✅ কাজ শেষ হলে রিসেট
         }
     };
     useEffect(() => {
@@ -324,9 +326,9 @@ const MainEmployList = () => {
                                         <button
                                             onClick={() => handleDelete(emp.id)}
                                             className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1 mt-[10px]"
-                                            disabled={loading}
+                                            disabled={deletingId === emp.id}
                                         >
-                                            {loading ? (
+                                            {deletingId === emp.id ? (
                                                 <div className="flex items-center">
                                                     <svg
                                                         className="animate-spin h-5 w-5 mr-2 text-white"
@@ -348,7 +350,6 @@ const MainEmployList = () => {
                                                             d="M4 12a8 8 0 018-8v8H4z"
                                                         ></path>
                                                     </svg>
-                                                    Deleting...
                                                 </div>
                                             ) : (
                                                 <FontAwesomeIcon

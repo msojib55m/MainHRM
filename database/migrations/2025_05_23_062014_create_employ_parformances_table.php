@@ -13,12 +13,14 @@ class CreateEmployParformancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('employ_parformances', function (Blueprint $table) {
-            $table->id();
-            $table->string('employee_name');
-            $table->integer('total_score');
-            $table->timestamps();
-        });
+    Schema::create('employ_parformances', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('employee_id')->constrained('employees_sub')->onDelete('cascade');
+    $table->string('employee_name')->nullable();
+    $table->integer('total_score');
+    $table->timestamps();
+});
+
     }
 
     /**

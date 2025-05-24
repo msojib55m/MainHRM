@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class EmployParformance extends Model
 {
     use HasFactory;
-    protected $fillable = ['employee_name', 'total_score'];
+   protected $fillable = ['employee_id', 'total_score'];
+
+    public function employee()
+    {
+        return $this->belongsTo(EmployeeSub::class, 'employee_id');
+    }
+
 }
 
 

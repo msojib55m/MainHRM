@@ -16,26 +16,43 @@ const MainEmployeePosition = () => {
         status: "active",
     });
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/positions")
-            .then((response) => response.json())
-            .then((data) => setPositions(data))
-            .catch((error) =>
-                console.error("Error fetching positions:", error)
-            );
+        const fetchPositions = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:8000/api/positions"
+                );
+                const data = await response.json();
+                setPositions(data);
+            } catch (error) {
+                console.error("Error loading positions:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPositions();
     }, []);
 
     // filter data search now
-    const filteredPositions = positions.filter((position) =>
-        position.position_name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredPositions = positions.filter(
+        (position) =>
+            typeof position.position_name === "string" &&
+            position.position_name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
     );
+
     // ইনপুট পরিবর্তন হ্যান্ডেল করা
     const handleChange = (e) => {
         setNewPosition({ ...newPosition, [e.target.name]: e.target.value });
     };
 
     // ফর্ম সাবমিট হ্যান্ডলিং
+    const [loading, setLoading] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await fetch(
                 "http://127.0.0.1:8000/api/positions",
@@ -62,6 +79,8 @@ const MainEmployeePosition = () => {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setLoading(false); //  Stop loading
         }
     };
     // handle update now
@@ -73,52 +92,71 @@ const MainEmployeePosition = () => {
         setEditOpen(true);
     };
     // handle update and mysql change now
+    // ✅ লোডিং স্টেট
+
     const handleUpdate = async (e) => {
         e.preventDefault();
-        const response = await fetch(
-            `http://127.0.0.1:8000/api/positions/${editData.id}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(editData),
-            }
-        );
-        if (response.ok) {
-            // লোকালি ডাটা আপডেট করা (পেজ রিলোড ছাড়া)
-            setPositions((prev) =>
-                prev.map((item) => (item.id === editData.id ? editData : item))
-            );
-            setEditOpen(false);
-        }
-    };
-    // delete now mysql and page now
-    const handleDelete = async (id) => {
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this position?"
-        );
-        if (confirmed) {
-            try {
-                const response = await fetch(
-                    `http://127.0.0.1:8000/api/positions/${id}`,
-                    {
-                        method: "DELETE",
-                    }
-                );
-                if (response.ok) {
-                    // Remove the deleted position from the local state
-                    setPositions((prevPositions) =>
-                        prevPositions.filter((position) => position.id !== id)
-                    );
-                } else {
-                    console.error("Failed to delete position");
+        setLoading(true); // ✅ লোডিং শুরু
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/api/positions/${editData.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(editData),
                 }
-            } catch (error) {
-                console.error("Error deleting position:", error);
+            );
+
+            if (response.ok) {
+                const updatedData = await response.json();
+
+                // লোকালি ডাটা আপডেট করা
+                setPositions((prev) =>
+                    prev.map((item) =>
+                        item.id === editData.id ? updatedData : item
+                    )
+                );
+                setEditOpen(false); // ✅ এডিট মোড বন্ধ
+            } else {
+                console.error("Failed to update position");
             }
+        } catch (error) {
+            console.error("Error updating position:", error);
+        } finally {
+            setLoading(false); // ✅ লোডিং শেষ
         }
     };
+
+    // delete now mysql and page now
+    const [deletingId, setDeletingId] = useState(null);
+
+    const handleDelete = async (id) => {
+        setDeletingId(id); // ✅ Set the deleting ID
+
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/api/positions/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            if (response.ok) {
+                // Remove the deleted position from the local state
+                setPositions((prevPositions) =>
+                    prevPositions.filter((position) => position.id !== id)
+                );
+            } else {
+                console.error("Failed to delete position");
+            }
+        } catch (error) {
+            console.error("Error deleting position:", error);
+        } finally {
+            setDeletingId(null); // ✅ Reset deletingId
+        }
+    };
+
     //
     return (
         <div>
@@ -241,8 +279,35 @@ const MainEmployeePosition = () => {
                                                     <button
                                                         type="submit"
                                                         className="px-4 h-[40px] py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                                        disabled={loading}
                                                     >
-                                                        Save
+                                                        {loading ? (
+                                                            <div className="flex items-center">
+                                                                <svg
+                                                                    className="animate-spin h-5 w-5 mr-2 text-white"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <circle
+                                                                        className="opacity-25"
+                                                                        cx="12"
+                                                                        cy="12"
+                                                                        r="10"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="4"
+                                                                    ></circle>
+                                                                    <path
+                                                                        className="opacity-75"
+                                                                        fill="currentColor"
+                                                                        d="M4 12a8 8 0 018-8v8H4z"
+                                                                    ></path>
+                                                                </svg>
+                                                                Processing...
+                                                            </div>
+                                                        ) : (
+                                                            "save"
+                                                        )}
                                                     </button>
                                                     <button
                                                         type="button"
@@ -325,7 +390,7 @@ const MainEmployeePosition = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="text-left">
+                                {/* <tbody className="text-left">
                                     {filteredPositions.length > 0 ? (
                                         filteredPositions.map(
                                             (position, index) => (
@@ -395,16 +460,151 @@ const MainEmployeePosition = () => {
                                             </td>
                                         </tr>
                                     )}
+                                </tbody> */}
+                                <tbody className="text-left">
+                                    {loading ? (
+                                        <tr>
+                                            <td
+                                                colSpan="4"
+                                                className="text-center py-6 text-gray-500"
+                                            >
+                                                <div className="flex items-center justify-center space-x-2">
+                                                    <svg
+                                                        className="animate-spin h-5 w-5 text-gray-600"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <circle
+                                                            className="opacity-25"
+                                                            cx="12"
+                                                            cy="12"
+                                                            r="10"
+                                                            stroke="currentColor"
+                                                            strokeWidth="4"
+                                                        ></circle>
+                                                        <path
+                                                            className="opacity-75"
+                                                            fill="currentColor"
+                                                            d="M4 12a8 8 0 018-8v8H4z"
+                                                        ></path>
+                                                    </svg>
+                                                    <span>
+                                                        Loading positions...
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : filteredPositions.length > 0 ? (
+                                        filteredPositions.map(
+                                            (position, index) => (
+                                                <tr
+                                                    key={position.id}
+                                                    className="hover:bg-gray-200 bg-gray-100"
+                                                >
+                                                    <td className="px-6 py-4 border-b">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="px-6 py-4 border-b">
+                                                        {position.position_name}
+                                                    </td>
+                                                    <td className="px-6 py-4 border-b">
+                                                        <span
+                                                            className={`px-3 py-1 text-white rounded-full text-sm ${
+                                                                position.status ===
+                                                                "active"
+                                                                    ? "bg-green-500"
+                                                                    : "bg-red-500"
+                                                            }`}
+                                                        >
+                                                            {(
+                                                                position.status ||
+                                                                "inactive"
+                                                            )
+                                                                .charAt(0)
+                                                                .toUpperCase() +
+                                                                (
+                                                                    position.status ||
+                                                                    "inactive"
+                                                                ).slice(1)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 border-b">
+                                                        <button
+                                                            className="px-3 py-1 text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-md text-sm transition duration-200"
+                                                            onClick={() =>
+                                                                handleEdit(
+                                                                    position
+                                                                )
+                                                            }
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faEdit}
+                                                            />
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    position.id
+                                                                )
+                                                            }
+                                                            className="ml-[10px] px-3 py-1 text-red-600 bg-red-100 hover:bg-red-200 rounded-md text-sm transition duration-200"
+                                                            disabled={
+                                                                deletingId ===
+                                                                position.id
+                                                            }
+                                                        >
+                                                            {deletingId ===
+                                                            position.id ? (
+                                                                <svg
+                                                                    className="animate-spin h-4 w-4 text-red-600"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <circle
+                                                                        className="opacity-25"
+                                                                        cx="12"
+                                                                        cy="12"
+                                                                        r="10"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="4"
+                                                                    ></circle>
+                                                                    <path
+                                                                        className="opacity-75"
+                                                                        fill="currentColor"
+                                                                        d="M4 12a8 8 0 018-8v8H4z"
+                                                                    ></path>
+                                                                </svg>
+                                                            ) : (
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faTrash
+                                                                    }
+                                                                />
+                                                            )}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )
+                                    ) : (
+                                        <tr>
+                                            <td
+                                                colSpan="4"
+                                                className="px-6 py-4 text-center text-gray-500"
+                                            >
+                                                No positions found.
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
                         {editDataOpen && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center">
                                 {/* Background Overlay */}
-                                <div
-                                    className="fixed inset-0 bg-black opacity-50"
-                                    onClick={() => setEditOpen(false)}
-                                ></div>
+                                <div className="fixed inset-0 bg-black opacity-50"></div>
 
                                 {/* Edit Form */}
                                 <div className="w-[500px] bg-white p-4 rounded-lg shadow-lg z-50 relative">
@@ -462,12 +662,39 @@ const MainEmployeePosition = () => {
                                             <button
                                                 type="submit"
                                                 className="px-4 h-[40px] py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                                disabled={loading}
                                             >
-                                                Update
+                                                {loading ? (
+                                                    <div className="flex items-center">
+                                                        <svg
+                                                            className="animate-spin h-5 w-5 mr-2 text-white"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <circle
+                                                                className="opacity-25"
+                                                                cx="12"
+                                                                cy="12"
+                                                                r="10"
+                                                                stroke="currentColor"
+                                                                strokeWidth="4"
+                                                            ></circle>
+                                                            <path
+                                                                className="opacity-75"
+                                                                fill="currentColor"
+                                                                d="M4 12a8 8 0 018-8v8H4z"
+                                                            ></path>
+                                                        </svg>
+                                                        Updating...
+                                                    </div>
+                                                ) : (
+                                                    "Upadate"
+                                                )}
                                             </button>
                                             <button
                                                 onClick={() =>
-                                                    setEditData(false)
+                                                    setEditOpen(false)
                                                 }
                                                 className="px-4 h-[40px] py-2 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
                                             >

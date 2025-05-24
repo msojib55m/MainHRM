@@ -60,12 +60,17 @@ class AuthController extends Controller
 
         return response('',204);
     }
+    // public function getEmployees()
+    // {
+    //     $employees = User::pluck('name')->toArray(); // অ্যারে আকারে রিটার্ন করবে
+    //     return response()->json($employees);
+    // }
     public function getEmployees()
-    {
-        $employees = User::pluck('name')->toArray(); // অ্যারে আকারে রিটার্ন করবে
-        return response()->json($employees);
-    }
-    
+{
+    $employees = User::select('id', 'name')->get();  // collection of objects with id and name
+    return response()->json($employees);
+}
+
     public function getEmployeesAdd()
     {
         $employees = User::pluck('name')->toArray(); // অ্যারে আকারে রিটার্ন করবে

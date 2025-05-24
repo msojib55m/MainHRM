@@ -6,6 +6,7 @@ import {
     faPlusSquare,
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import EmployeeParformanceTwo from "./EmployeeParformanceTwo";
 const EmployeeParformanceOne = () => {
     const [showAddNew, setShowAddNew] = useState(false);
@@ -89,41 +90,13 @@ const EmployeeParformanceOne = () => {
     // const [selectedEmployee, setSelectedEmployee] = useState("");
 
     // Fetch employee list from API
-    const [employees, setEmployees] = useState([
-        "Honorato Imogene Curry Terry",
-        "Maisha Lucy Zamora Gonzales",
-        "Amy Aphrodite Zamora Peck",
-        "Jonathan Ibrahim Shekh",
-        "Scarlet Melvin Reese Rogers",
-        "Arnika Paula Roach Mcmillan",
-        "Suchana Noel Mcfarland Mejia",
-        "Aquila Elaine Jennings Jefferson",
-        "Kristen Lillith Stout Rodriquez",
-        "Nell Mohona Lacey Byers Lewis",
-        "Devin Aimee Valentine Castro",
-        "Inga Rose Dennis Robbins",
-        "Jerome Grace Willis Terry",
-        "Ora Caryn Garcia Cardenas",
-        "Flavia Xandra Stafford Pennington",
-        "Adena Dominic Guthrie Rocha",
-        "Kieran Thane Aguilar Larson",
-        "Whoopi Julian Mcleod Haynes",
-        "Abra Nelle Barron Hyde",
-        "Oleg Hall Larson Sloan",
-        "Odysseus Glover",
-        "Dawn Cobb",
-        "Jaquelyn White",
-        "Thomas Goodman",
-        "Iman",
-        "Khubaib Ahmed",
-        "Uma Stafford",
-        "Mohmed Afif Akram",
-        "Ch. Monalisa Subudhi",
-    ]);
+    const [employees, setEmployees] = useState([]);
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/employees")
             .then((res) => res.json())
-            .then((data) => setEmployees(data))
+            .then((data) => {
+                setEmployees(data);
+            })
             .catch((error) =>
                 console.error("Error fetching employees:", error)
             );
@@ -136,41 +109,49 @@ const EmployeeParformanceOne = () => {
     }, [totalScoreTable1, totalScoreTable2, bonus]);
 
     // Handle form submission
+
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+    // spging add to submit
+    const [loading, setLoading] = useState(false);
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent page reload
-
-        if (!selectedEmployee) {
-            alert("Please select an employee.");
-            return;
-        }
-
+        e.preventDefault();
+        setLoading(true);
         const selectedData = {
+            employee_id: selectedEmployeeId || null,
             employee_name: selectedEmployee,
             total_score: finalTotalScore,
         };
-
+        console.log("Sending employee_id:", selectedEmployeeId);
+        console.log("Sending employee_name:", selectedEmployee);
         try {
-            const response = await fetch(
+            const response = await axios.post(
                 "http://127.0.0.1:8000/api/EmployeePerformanceOne",
+                selectedData,
                 {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(selectedData),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 }
             );
 
-            const result = await response.json();
-            if (response.ok) {
-                alert("✅ Data successfully saved!");
-                setShowAddNew(false);
-            } else {
-                alert("❌ Error saving data: " + result.message);
-            }
+            setShowAddNew(false);
         } catch (error) {
-            console.error("Error submitting data:", error);
-            alert("❌ Server error");
+            if (error.response) {
+                // Laravel validation or other server error
+                console.error(
+                    "❌ Server responded with error:",
+                    error.response.data
+                );
+                alert("❌ " + error.response.data.message);
+            } else {
+                console.error("❌ Request failed:", error.message);
+                alert("❌ Request failed");
+            }
+        } finally {
+            setLoading(true);
         }
     };
+
     return (
         <div>
             <div className="sticky mt-[20px] h-[auto] p-2 z-10 flex items-start justify-between bg-[white] rounded-[12px]">
@@ -259,14 +240,9 @@ const EmployeeParformanceOne = () => {
                                             >
                                                 <input
                                                     type="text"
-                                                    className="border border-gray-400 focus:border-green-500 focus:outline-none p-2 rounded w-64 cursor-pointer  bg-white"
+                                                    className="border border-gray-400 focus:border-green-500 focus:outline-none p-2 rounded w-64 cursor-pointer bg-white"
                                                     placeholder="Select Employee"
                                                     value={selectedEmployee}
-                                                    onChange={(e) =>
-                                                        setSelectedEmployee(
-                                                            e.target.value
-                                                        )
-                                                    }
                                                     onClick={() =>
                                                         setIsOpen(!isOpen)
                                                     }
@@ -281,17 +257,21 @@ const EmployeeParformanceOne = () => {
                                                             ) => (
                                                                 <li
                                                                     key={index}
-                                                                    className="p-3 hover:bg-gray-200 cursor-pointer"
                                                                     onClick={() => {
                                                                         setSelectedEmployee(
-                                                                            employee
-                                                                        ); // Directly set employee name
+                                                                            employee.name
+                                                                        ); // name set করো
+                                                                        setSelectedEmployeeId(
+                                                                            employee.id
+                                                                        ); // id set করো
                                                                         setIsOpen(
                                                                             false
                                                                         );
                                                                     }}
                                                                 >
-                                                                    {employee}
+                                                                    {
+                                                                        employee.name
+                                                                    }
                                                                 </li>
                                                             )
                                                         )}
@@ -299,8 +279,23 @@ const EmployeeParformanceOne = () => {
                                                 )}
                                             </div>
                                         </div>
-
                                         {/* Review Period Input */}
+                                        {/* <div className="mb-4">
+                                            <label className="block text-gray-700 font-medium mb-2">
+                                                Employee ID:
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="border border-gray-400 p-2 rounded w-full focus:outline-none focus:border-green-500"
+                                                placeholder="Enter Employee ID"
+                                                value={selectedEmployeeId}
+                                                onChange={(e) =>
+                                                    setSelectedEmployeeId(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div> */}
                                         <div className="flex items-center ml-4">
                                             <label className="font-medium text-gray-700">
                                                 Review Period:
@@ -905,9 +900,36 @@ const EmployeeParformanceOne = () => {
                                             <div class="text-right mt-4">
                                                 <button
                                                     type="submit"
-                                                    class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded w-32"
+                                                    className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded w-32"
+                                                    disabled={loading}
                                                 >
-                                                    Save
+                                                    {loading ? (
+                                                        <div className="flex items-center">
+                                                            <svg
+                                                                className="animate-spin h-5 w-5 mr-2 text-white"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8v8H4z"
+                                                                ></path>
+                                                            </svg>
+                                                            Processing...
+                                                        </div>
+                                                    ) : (
+                                                        "save"
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
