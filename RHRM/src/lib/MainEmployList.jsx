@@ -18,7 +18,6 @@ const MainEmployList = () => {
         setLoadingTable(true);
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/EmpolySub");
-            console.log("Fetched employees:", res.data); // এটা কনসোলে চেক করুন
             setEmployees(res.data);
         } catch (err) {
             console.error("Error fetching employees:", err);

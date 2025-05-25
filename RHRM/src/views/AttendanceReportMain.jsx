@@ -26,21 +26,13 @@ import {
     faMagnifyingGlassPlus,
     faChevronDown,
     faCirclePlus,
-    faTimes,
-    faPenToSquare,
-    faTrashCan,
-    faFileExcel,
-    faFileCsv,
 } from "@fortawesome/free-solid-svg-icons";
 
 // fontawesome Icon Ends
 import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/Contextsprovider";
 import axiosClient from "../axiosClient";
-import { motion } from "framer-motion";
-import axios from "axios";
-import * as XLSX from "xlsx"; // Import xlsx library
-import AwardOne from "../lib/Award/AwardOne";
+import AttendanceReportOne from "../lib/ReportsAll/AttendanceReportOne";
 // try navbar toggle
 // try navbar toggle
 // show navbar
@@ -51,7 +43,7 @@ const pictures = [
     "https://hrm.bdtask-demoserver.com/storage/application/1716900212sidebar-collapsed-logo.png",
 ];
 
-const AwardList = () => {
+const AttendanceReportMain = () => {
     const { user, token, setUser, setToken } = useStateContext();
     if (!token) {
         return <Navigate to="login" />;
@@ -310,7 +302,7 @@ const AwardList = () => {
         );
     };
     //search input work
-    // toogle active navar
+    // slidebar open active now
     const location = useLocation();
     const [openIndex, setOpenIndex] = useState(null);
     const toggleMenu = (index) => {
@@ -327,8 +319,7 @@ const AwardList = () => {
             });
         });
     }, [location.pathname, searchInput]);
-    // toogle active navar
-
+    // slidebar open active now
     // try
     // dashbord
 
@@ -341,18 +332,13 @@ const AwardList = () => {
     // Togle or NavTogle now
     // Togle or NavTogle End
     // attendance now
-
-    // Add new Award start
-    // Initial data
-
-    // page Entry
-    // link active now Dasbord
+    // link active now
     const isActive = location.pathname === "/";
     return (
         <>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Award list</title>
+                <title>Attendance report</title>
                 <link rel="canonical" href="http://mysite.com/example" />
             </Helmet>
             <div
@@ -694,49 +680,24 @@ const AwardList = () => {
                 </nav>
                 <Outlet />
                 {/* navbar Ends */}
-                {/* Card one */}
-                <div
-                    className={`${
-                        nabVarOpen
-                            ? "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[60vw] md:[left:35%] md1:w-[64vw] md1:[left:33%] md2:w-[65vw] md2:[left:33%] md3:w-[66vw] md3:[left:30%] md4:w-[66vw] md4:[left:28%] md5:w-[66vw] md5:[left:30%] lg:w-[69vw] lg:[left:27%] lg2:w-[72vw] lg2:[left:25%] lg3:w-[72vw] lg3:[left:23%] xl1:w-[72vw] xl1:[left:20%] xl:w-[72vw] xl:[left:22%] xxll:w-[73vw] xxll:[left:18%]  xxl1:w-[75vw]  xxl1:[left:20%] xxl2:w-[77vw] xxl2:[left:16%]  "
-                            : "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[83vw] md:[left:12%] md1:w-[83vw] md1:[left:12%] md2:w-[83vw] md2:[left:12%] md3:w-[83vw] md3:[left:12%] md4:w-[83vw] md4:[left:12%] md5:w-[83vw] md5:[left:12%] lg:w-[83vw] lg:[left:12%] lg2:w-[82vw] lg2:[left:12%] lg3:w-[82vw] lg3:[left:12%] xl1:w-[82vw] xl1:[left:12%] xl:w-[82vw] xl:[left:12%] xxll:w-[82vw] xxll:[left:12%]  xxl1:w-[87vw]  xxl1:[left:7%] xxl2:w-[87vw] xxl2:[left:7%]"
-                    } duration-300 no-scrollbar `}
-                >
-                    <AwardOne />
-                </div>
                 <div className="">
+                    {/* <NoticeListOne /> */}
                     <div
-                        className={`${
+                        class={`${
                             nabVarOpen
-                                ? "fixed top-[10%] left-[17%] w-[82vw]  overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[60vw] md:[left:35%] md1:w-[64vw] md1:[left:33%] md2:w-[65vw] md2:[left:33%] md3:w-[66vw] md3:[left:30%] md4:w-[66vw] md4:[left:28%] md5:w-[66vw] md5:[left:30%] lg:w-[69vw] lg:[left:27%] lg2:w-[72vw] lg2:[left:25%] lg3:w-[72vw] lg3:[left:23%] xl1:w-[72vw] xl1:[left:20%] xl:w-[72vw] xl:[left:22%] xxll:w-[73vw] xxll:[left:18%]  xxl1:w-[75vw]  xxl1:[left:20%] xxl2:w-[77vw] xxl2:[left:16%]  "
-                                : "fixed top-[10%] left-[17%] w-[82vw] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[83vw] md:[left:12%] md1:w-[83vw] md1:[left:12%] md2:w-[83vw] md2:[left:12%] md3:w-[83vw] md3:[left:12%] md4:w-[83vw] md4:[left:12%] md5:w-[83vw] md5:[left:12%] lg:w-[83vw] lg:[left:12%] lg2:w-[82vw] lg2:[left:12%] lg3:w-[82vw] lg3:[left:12%] xl1:w-[82vw] xl1:[left:12%] xl:w-[82vw] xl:[left:12%] xxll:w-[82vw] xxll:[left:12%]  xxl1:w-[87vw]  xxl1:[left:7%] xxl2:w-[87vw] xxl2:[left:7%]"
+                                ? "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[60vw] md:[left:35%] md1:w-[64vw] md1:[left:33%] md2:w-[65vw] md2:[left:33%] md3:w-[66vw] md3:[left:30%] md4:w-[66vw] md4:[left:28%] md5:w-[66vw] md5:[left:30%] lg:w-[69vw] lg:[left:27%] lg2:w-[72vw] lg2:[left:25%] lg3:w-[72vw] lg3:[left:23%] xl1:w-[72vw] xl1:[left:20%] xl:w-[72vw] xl:[left:22%] xxll:w-[73vw] xxll:[left:18%]  xxl1:w-[75vw]  xxl1:[left:20%] xxl2:w-[77vw] xxl2:[left:16%]  "
+                                : "fixed top-[10%] left-[17%] w-[82vw] h-[100vh] overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative xs:w-[40vw]  md:w-[83vw] md:[left:12%] md1:w-[83vw] md1:[left:12%] md2:w-[83vw] md2:[left:12%] md3:w-[83vw] md3:[left:12%] md4:w-[83vw] md4:[left:12%] md5:w-[83vw] md5:[left:12%] lg:w-[83vw] lg:[left:12%] lg2:w-[82vw] lg2:[left:12%] lg3:w-[82vw] lg3:[left:12%] xl1:w-[82vw] xl1:[left:12%] xl:w-[82vw] xl:[left:12%] xxll:w-[82vw] xxll:[left:12%]  xxl1:w-[87vw]  xxl1:[left:7%] xxl2:w-[87vw] xxl2:[left:7%]"
                         } duration-300 no-scrollbar `}
                     >
-                        <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ">
-                            <div className="flex items-center justify-between pr-[20px] pl-[20px]">
-                                <div className="">
-                                    <h1 className="mt-[20px]">
-                                        © 2025 BDTASK , All Rights Reserved.
-                                    </h1>
-                                </div>
-                                <div className="mt-[20px]">
-                                    <div className="flex">
-                                        <div>
-                                            <h1>Designed by:</h1>
-                                        </div>
-                                        <div className="ml-[10px] text-[blue]">
-                                            <p className="">Sojib</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </footer>
+                        <div className="sticky mt-[100px] "></div>
+                        <div>
+                            <AttendanceReportOne />
+                        </div>
                     </div>
                 </div>
-                {/* Card one */}
             </div>
         </>
     );
 };
 
-export default AwardList;
+export default AttendanceReportMain;

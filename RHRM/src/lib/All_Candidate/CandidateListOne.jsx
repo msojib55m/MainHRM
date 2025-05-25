@@ -120,6 +120,7 @@ const CandidateListOne = () => {
             }
 
             const data = await response.json();
+
             setCandidates((prev) => [data, ...prev]); // টেবিল আপডেট
             setSubmitted(true);
 

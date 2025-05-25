@@ -139,13 +139,13 @@ const EmployeeParformanceOne = () => {
             if (error.response) {
                 // Laravel validation or other server error
                 console.error(
-                    "❌ Server responded with error:",
+                    " Server responded with error:",
                     error.response.data
                 );
-                alert("❌ " + error.response.data.message);
+                alert(" " + error.response.data.message);
             } else {
-                console.error("❌ Request failed:", error.message);
-                alert("❌ Request failed");
+                console.error(" Request failed:", error.message);
+                alert(" Request failed");
             }
         } finally {
             setLoading(true);

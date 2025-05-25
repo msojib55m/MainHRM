@@ -134,6 +134,15 @@ const clients = () => {
             setLoading(false);
         }
     };
+
+    const restForm = () => {
+        setClientName("");
+        setEmail("");
+        setCompanyName("");
+        setAddress("");
+        setSelectedCountry(null);
+        setclients(true);
+    };
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this client?"))
             return;
@@ -179,7 +188,7 @@ const clients = () => {
                                 <div className="">
                                     <button
                                         class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
-                                        onClick={() => setclients(true)}
+                                        onClick={() => restForm()}
                                     >
                                         <FontAwesomeIcon icon={faCirclePlus} />
                                         <div className="ml-[5px]">

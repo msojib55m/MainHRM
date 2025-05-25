@@ -70,6 +70,9 @@ const CurrencySettingMain = lazy(() =>
     import("./views/CurrencySettingMain.jsx")
 );
 const MailsetepMain = lazy(() => import("./views/MailsetepMain.jsx"));
+const AttendanceReportMain = lazy(() =>
+    import("./views/AttendanceReportMain.jsx")
+);
 // লোডিং ইফেক্ট দেখানোর জন্য কম্পোনেন্ট
 const Loading = () => (
     <div
@@ -760,6 +763,24 @@ const router = createBrowserRouter([
         ],
     },
     // setting start
+    // All Reprots
+    {
+        path: "/hr/reports/daily-present",
+        element: <PrivateRoute />, // 🔥 এই রুট এখন প্রাইভেট
+        children: [
+            {
+                path: "/hr/reports/daily-present",
+                element: (
+                    <Suspense fallback={<Loading />}>
+                        <PageLoaderWrapper>
+                            <AttendanceReportMain />
+                        </PageLoaderWrapper>
+                    </Suspense>
+                ),
+            },
+        ],
+    },
+    // All Reprots
     // Message Rule one
     {
         path: "/message/new",

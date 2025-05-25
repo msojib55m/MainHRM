@@ -53,6 +53,13 @@ use App\Http\Controllers\AttendanceControllerMonthly;
 
 Route::post('/attendanceMonthly', [AttendanceControllerMonthly::class, 'store']);
 
+// award start
+use App\Http\Controllers\AwardController;
+Route::post("/award",[AwardController::class,"store"]);
+Route::get('/awardGet',[AwardController::class,"index"]);
+Route::put('/awardEdit/{id}',[AwardController::class,"update"]);
+Route::delete('/awardDelete/{id}',[AwardController::class,"delete"]);
+// Award Ends
 
 // Department start
 // Department Store Post database now

@@ -32,10 +32,11 @@ import {
 
 // fontawesome Icon Ends
 import { Navigate, Outlet } from "react-router-dom";
-import { useStateContext } from "../contexts/Contextsprovider";
-import axiosClient from "../axiosClient";
+
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useStateContext } from "../contexts/Contextsprovider";
+import axiosClient from "../axiosClient";
 // try navbar toggle
 // try navbar toggle
 // show navbar
@@ -377,16 +378,24 @@ const LeaveTypeHoliday = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     // handleSubmit দ্বারা ডাটা পাঠানো হবে
-
+    const restForm = () => {
+        setFormData({
+            leave_type: "",
+            leave_code: "",
+            leave_days: "",
+        });
+        setTypeHoliday(true);
+    };
+    const [loading, setLoading] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/Leave-Type-Holiday",
                 formData
             );
-            console.log("API Response:", response.data);
-            alert("Leave application saved successfully!");
+
             // নতুন ডাটা টেবিলে দেখানোর জন্য প্যারেন্ট কম্পোনেন্টকে আপডেট করা হচ্ছে
             setLeaveData((prevData) => [...prevData, response.data]);
             setFormData({ leave_type: "", leave_code: "", leave_days: "" });
@@ -394,20 +403,43 @@ const LeaveTypeHoliday = () => {
             // Reset form
         } catch (error) {
             console.error("Error submitting form:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     // ডাটা আনার জন্য ইনিশিয়াল স্টেট তৈরি করতে হবে । এখনে ডাটা স্টোর থাকবে
     const [leaveData, setLeaveData] = useState([]);
+    // useEffect(() => {
+    //     axios
+    //         .get("http://127.0.0.1:8000/api/Leave-Type-Holiday-Show")
+    //         .then((response) => {
+    //             setLeaveData(response.data);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Data not show in Leave Type Holiday:", error);
+    //         });
+    // }, []);
     useEffect(() => {
-        axios
-            .get("http://127.0.0.1:8000/api/Leave-Type-Holiday-Show")
-            .then((response) => {
-                setLeaveData(response.data);
-            })
-            .catch((error) => {
-                console.error("Data not show in Leave Type Holiday:", error);
-            });
+        const LeaveTypeAll = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosClient
+                    .get("/Leave-Type-Holiday-Show")
+                    .then((response) => {
+                        setLeaveData(response.data);
+                    });
+            } catch (error) {
+                const response = error.response;
+                if (response && response.status === 422) {
+                    setErrors(response.data.errors);
+                    console.log(response.data);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        LeaveTypeAll();
     }, []);
     // নতুন লিভ অ্যাড হলে তালিকায় যুক্ত করুন
     const [searchTerm, setSearchTerm] = useState("");
@@ -475,7 +507,7 @@ const LeaveTypeHoliday = () => {
 
             // ✅ 2. Fetch Latest Data from Server (To Ensure Accuracy)
             setTimeout(() => {
-                fetchData();
+                LeaveTypeAll();
             }, 500); // Small delay to prevent UI flickering
         } catch (error) {
             console.error("Error updating leave:", error);
@@ -484,33 +516,54 @@ const LeaveTypeHoliday = () => {
     };
 
     // delete
+    // const handleDelete = async (id) => {
+    //     try {
+    //         const response = await fetch(
+    //             `http://127.0.0.1:8000/api/leave-Type-Holiday-ShowNow/${id}`,
+    //             {
+    //                 method: "DELETE",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //             }
+    //         );
+
+    //         const result = await response.json();
+
+    //         if (response.ok) {
+    //             alert(result.message); // Success message
+    //             // Update state by filtering out the deleted leave record
+    //             setLeaveData((prevLeaveData) =>
+    //                 prevLeaveData.filter((leave) => leave.id !== id)
+    //             );
+    //         } else {
+    //             console.error("Error Response:", result);
+    //             alert("Failed to delete leave data");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error deleting leave:", error);
+    //         alert("An error occurred while deleting the leave data");
+    //     }
+    // };
+    const [deletingId, setDeletingId] = useState(null);
     const handleDelete = async (id) => {
+        setDeletingId(id);
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/api/leave-Type-Holiday-ShowNow/${id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+            const response = await axiosClient.delete(
+                `/leave-Type-Holiday-ShowNow/${id}`
             );
 
-            const result = await response.json();
-
-            if (response.ok) {
-                alert(result.message); // Success message
-                // Update state by filtering out the deleted leave record
-                setLeaveData((prevLeaveData) =>
-                    prevLeaveData.filter((leave) => leave.id !== id)
-                );
-            } else {
-                console.error("Error Response:", result);
-                alert("Failed to delete leave data");
+            setLeaveData((prevLeaveData) =>
+                prevLeaveData.filter((leave) => leave.id !== id)
+            );
+        } catch (err) {
+            const response = err.response;
+            if (response && response.status === 422) {
+                setErrors(response.data.errors);
+                console.log(response.data);
             }
-        } catch (error) {
-            console.error("Error deleting leave:", error);
-            alert("An error occurred while deleting the leave data");
+        } finally {
+            setDeletingId(null);
         }
     };
     const isActive = location.pathname === "/";
@@ -900,7 +953,7 @@ const LeaveTypeHoliday = () => {
                                 <div className="">
                                     <button
                                         class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
-                                        onClick={() => setTypeHoliday(true)}
+                                        onClick={() => restForm()}
                                     >
                                         <FontAwesomeIcon icon={faCirclePlus} />
                                         <div className="ml-[5px]">
@@ -912,7 +965,7 @@ const LeaveTypeHoliday = () => {
                         </div>
                         {openTypeHoliday && (
                             <form onSubmit={handleSubmit}>
-                                <div className="fixed inset-0 bg-gray-200 bg-opacity-50 z-50 flex justify-center items-center">
+                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                                     <div className="bg-white rounded-md shadow-lg w-[700px]">
                                         <div className="w-[700px] mt-6 p-6">
                                             <h1 className="ml-4 text-lg font-semibold">
@@ -921,7 +974,6 @@ const LeaveTypeHoliday = () => {
                                             <div className="border-b border-gray-200 my-3"></div>
                                             <div className="space-y-4 ml-4">
                                                 <div className="flex items-center gap-4">
-                                                    {" "}
                                                     <label className="w-40 font-medium">
                                                         Leave type *
                                                     </label>
@@ -971,6 +1023,39 @@ const LeaveTypeHoliday = () => {
                                                 <div className="border-b border-gray-200 my-3"></div>
                                                 <div className="flex gap-4 justify-end mt-4">
                                                     <button
+                                                        type="submit"
+                                                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                                        disabled={loading}
+                                                    >
+                                                        {loading ? (
+                                                            <div className="flex items-center">
+                                                                <svg
+                                                                    className="animate-spin h-5 w-5 mr-2 text-white"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <circle
+                                                                        className="opacity-25"
+                                                                        cx="12"
+                                                                        cy="12"
+                                                                        r="10"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="4"
+                                                                    ></circle>
+                                                                    <path
+                                                                        className="opacity-75"
+                                                                        fill="currentColor"
+                                                                        d="M4 12a8 8 0 018-8v8H4z"
+                                                                    ></path>
+                                                                </svg>
+                                                                Processing...
+                                                            </div>
+                                                        ) : (
+                                                            "save"
+                                                        )}
+                                                    </button>
+                                                    <button
                                                         type="button"
                                                         className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                                                         onClick={() => {
@@ -980,12 +1065,6 @@ const LeaveTypeHoliday = () => {
                                                         }}
                                                     >
                                                         Close
-                                                    </button>
-                                                    <button
-                                                        type="submit"
-                                                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                                                    >
-                                                        Save
                                                     </button>
                                                 </div>
                                             </div>
@@ -1071,7 +1150,38 @@ const LeaveTypeHoliday = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-left">
-                                    {currentItems.length > 0 ? (
+                                    {loading ? (
+                                        <tr>
+                                            <td
+                                                colSpan="4"
+                                                className="text-center py-6 text-gray-500"
+                                            >
+                                                <div className="flex items-center justify-center space-x-2">
+                                                    <svg
+                                                        className="animate-spin h-5 w-5 text-gray-600"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <circle
+                                                            className="opacity-25"
+                                                            cx="12"
+                                                            cy="12"
+                                                            r="10"
+                                                            stroke="currentColor"
+                                                            strokeWidth="4"
+                                                        ></circle>
+                                                        <path
+                                                            className="opacity-75"
+                                                            fill="currentColor"
+                                                            d="M4 12a8 8 0 018-8v8H4z"
+                                                        ></path>
+                                                    </svg>
+                                                    <span>Loading ...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : currentItems.length > 0 ? (
                                         currentItems.map((leave, index) => (
                                             <tr
                                                 key={leave.id}
@@ -1120,10 +1230,38 @@ const LeaveTypeHoliday = () => {
                                                                 leave.id
                                                             )
                                                         }
+                                                        disabled={
+                                                            deletingId ===
+                                                            leave.id
+                                                        }
                                                     >
-                                                        <FontAwesomeIcon
-                                                            icon={faTrash}
-                                                        />
+                                                        {deletingId ===
+                                                        leave.id ? (
+                                                            <svg
+                                                                className="animate-spin h-4 w-4 text-red-600"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8v8H4z"
+                                                                ></path>
+                                                            </svg>
+                                                        ) : (
+                                                            <FontAwesomeIcon
+                                                                icon={faTrash}
+                                                            />
+                                                        )}
                                                     </button>
                                                 </td>
                                             </tr>
@@ -1134,7 +1272,7 @@ const LeaveTypeHoliday = () => {
                                                 colSpan="4"
                                                 className="text-center text-red-500 font-semibold py-4"
                                             >
-                                                ❌ No records found!
+                                                No records found!
                                             </td>
                                         </tr>
                                     )}

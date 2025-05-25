@@ -20,7 +20,6 @@ public function store(Request $request)
 
 
 
-  
     public function index()
     {
         return response()->json(EmployParformance::all());
