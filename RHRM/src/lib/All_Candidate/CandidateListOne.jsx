@@ -12,6 +12,7 @@ import {
     faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import axiosClient from "../../axiosClient";
 const CandidateListOne = () => {
     const [showForm, setShowForm] = useState(false);
     const toggleView = () => {
@@ -97,42 +98,27 @@ const CandidateListOne = () => {
             }
         }
     };
-    // input filed setep now
-    // handleSubmit ডাটা পাঠানোর হচ্ছে
+
+    // react to laravel and laravel to mysql store now
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoadingTable(true); // নতুন সাবমিশনের সময় লোডিং দেখাও
-
+        setLoading(true);
         try {
-            const response = await fetch(
-                "http://127.0.0.1:8000/api/candidates",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Failed to submit");
-            }
-
-            const data = await response.json();
-
-            setCandidates((prev) => [data, ...prev]); // টেবিল আপডেট
-            setSubmitted(true);
-
-            // ফর্ম রিসেট করুন
+            const response = await axiosClient.post("/candidates", formData);
+            fetchProjects();
             resetFormData();
-        } catch (error) {
-            console.error("Error submitting form:", error);
+            setSubmitted(true);
+            alert("Form submitted successfully!");
+        } catch (err) {
+            const response = err.response;
+            if (response && response.status === 422) {
+                setErrors(response.data.errors);
+                console.log(response.data);
+            }
         } finally {
-            setLoadingTable(false); // যেভাবেই হোক, শেষে লোডিং বন্ধ
+            setLoading(false);
         }
     };
-
     // data
     const [candidates, setCandidates] = useState([]);
     const fetchProjects = async () => {
@@ -212,7 +198,6 @@ const CandidateListOne = () => {
                     body: JSON.stringify(formData),
                 }
             );
-
             if (!response.ok) throw new Error("Update failed");
 
             const updatedCandidate = await response.json();
@@ -652,8 +637,37 @@ const CandidateListOne = () => {
                                         </div>
                                     </div>
                                     <div className="flex justify-end mt-4">
-                                        <button className="bg-green-500 text-white px-4 py-1">
-                                            Submit
+                                        <button
+                                            className="bg-green-500 text-white px-4 py-1"
+                                            disabled={loading}
+                                        >
+                                            {loading ? (
+                                                <div className="flex items-center">
+                                                    <svg
+                                                        className="animate-spin h-5 w-5 mr-2 text-white"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <circle
+                                                            className="opacity-25"
+                                                            cx="12"
+                                                            cy="12"
+                                                            r="10"
+                                                            stroke="currentColor"
+                                                            strokeWidth="4"
+                                                        ></circle>
+                                                        <path
+                                                            className="opacity-75"
+                                                            fill="currentColor"
+                                                            d="M4 12a8 8 0 018-8v8H4z"
+                                                        ></path>
+                                                    </svg>
+                                                    Processing...
+                                                </div>
+                                            ) : (
+                                                "Save"
+                                            )}
                                         </button>
                                     </div>
                                 </div>
