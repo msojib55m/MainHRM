@@ -109,6 +109,7 @@ use App\Http\Controllers\EmployeeSubController;
 
 Route::get('/EmpolySub', [EmployeeSubController::class, 'index']);
 Route::post('/employees', [EmployeeSubController::class, 'store']);
+Route::delete('/employees/reset', [EmployeeSubController::class, 'resetEmployees']);
 
 Route::put('/SubEmpolyEdit/{id}', [EmployeeSubController::class, 'update']);
 Route::delete('/SubEmpolyDelete/{id}', [EmployeeSubController::class, 'destroy']);

@@ -12,23 +12,22 @@ class EmployeeSub extends Model
 
 
 
- protected $fillable = [
-    'employee_id',
-    'name',
-    'email',
-    'mobile',
-    'dob',
-    'designation',
-    'joining_date',
-    'confirm_joining',
-    'status',
-    'position_id', // ✅ Add this if missing
-];
+  protected $fillable = [
+        'position_id',
+        'name',
+        'email',
+        'mobile',
+        'dob',
+        'designation',
+        'joining_date',
+        'confirm_joining',
+        'status',
+    ];
 
 
     public function position()
     {
-        return $this->belongsTo(Position::class);
+        return $this->belongsTo(Position::class,"position_id");
     }
 
     public function performance()

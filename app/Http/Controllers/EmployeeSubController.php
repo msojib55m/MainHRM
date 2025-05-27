@@ -2,90 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\EmployeeSub;
-use Illuminate\Support\Facades\Log;
+use App\Models\EmployParformance;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeSubController extends Controller
 {
-    // data get in to mysql
- public function index()
-{
-    $employees = EmployeeSub::all(); // ✅ পুরো কলেকশন নিচ্ছে
+    // সব employee দেখানো
+    public function index()
+    {
+        return response()->json(EmployeeSub::with('position')->get());
+    }
 
-    return response()->json($employees);
-}
-    // data store in mysql
-    public function emplyee()
-{
-    $employees = EmployeeSub::select('id', 'name')->get();
-    return response()->json($employees);
-}
-
-public function store(Request $request)
-{
-    try {
+    // নতুন employee যুক্ত করা
+    public function store(Request $request)
+    {
         $validated = $request->validate([
-            'employee_id' => 'required',
-            'name' => 'required',
+            'position_id' => 'required|integer|exists:positions,id',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:employees_sub,email',
-            'mobile' => 'required',
+            'mobile' => 'required|string|max:20',
             'dob' => 'required|date',
-            'designation' => 'required',
+            'designation' => 'required|string|max:255',
             'joining_date' => 'required|date',
-            'confirm_joining' => 'nullable|date',
-            'status' => 'required|in:active,inactive',
-            'position_id' => 'required|exists:positions,id'
+            'confirm_joining' => 'required|date',
+            'status' => 'required|string|in:active,inactive',
         ]);
 
         $employee = EmployeeSub::create($validated);
 
-        return response()->json([
-            'message' => 'Employee stored successfully',
-            'data' => $employee
+        return response()->json(['message' => 'Employee created successfully', 'employee' => $employee], 201);
+    }
+
+    // employee আপডেট করা
+    public function update(Request $request, $id)
+    {
+        $employee = EmployeeSub::findOrFail($id);
+
+        $validated = $request->validate([
+            'position_id' => 'required|integer|exists:positions,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:employees_sub,email,' . $employee->id,
+            'mobile' => 'required|string|max:20',
+            'dob' => 'required|date',
+            'designation' => 'required|string|max:255',
+            'joining_date' => 'required|date',
+            'confirm_joining' => 'required|date',
+            'status' => 'required|string|in:active,inactive',
         ]);
-    } catch (\Throwable $e) {
-        Log::error('Error storing employee: '.$e->getMessage());
-        return response()->json([
-            'error' => 'Server error occurred',
-            'details' => $e->getMessage()
-        ], 500);
+
+        $employee->update($validated);
+
+        return response()->json(['message' => 'Employee updated successfully', 'employee' => $employee]);
     }
-}
 
+    // employee delete করা
+    public function destroy($id)
+    {
+        $employee = EmployeeSub::findOrFail($id);
+        $employee->delete();
 
-
-// update now
-public function update(Request $request, $id)
-{
-    $employee = EmployeeSub::findOrFail($id);
-
-    $validated = $request->validate([
-        'employee_id' => 'required',
-        'name' => 'required',
-        'email' => 'required|email',
-        'mobile' => 'required',
-        'dob' => 'nullable|date',
-        'designation' => 'required',
-        'joining_date' => 'nullable|date',
-        'confirm_joining' => 'nullable|date',
-        'status' => 'required',
-    ]);
-
-    $employee->update($validated);
-
-    return response()->json(['message' => 'Employee updated successfully'], 200);
-}
-
-public function destroy($id)
-{
-    $item = EmployeeSub::find($id);
-    if ($item) {
-        $item->delete();
-        return response()->json(['message' => 'Deleted successfully']);
-    } else {
-        return response()->json(['message' => 'Not found'], 404);
+        return response()->json(['message' => 'Employee deleted successfully']);
     }
-}
-    
+
+    // সব employee reset করা
+    public function resetEmployees()
+    {
+        try {
+            // প্রথমে employ_parformances ডিলিট করা (FK আছে)
+            DB::table('employ_parformances')->delete();
+
+            // তারপর employees_sub ডিলিট করা
+            DB::table('employees_sub')->delete();
+
+            // auto increment রিসেট করা
+            DB::statement('ALTER TABLE employees_sub AUTO_INCREMENT = 1');
+
+            return response()->json(['message' => 'All employees have been reset successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error occurred: ' . $e->getMessage()], 500);
+        }
+    }
 }

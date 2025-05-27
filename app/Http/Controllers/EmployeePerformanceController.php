@@ -9,14 +9,15 @@ class EmployeePerformanceController extends Controller
 {
 public function store(Request $request)
 {
-    $data = new EmployParformance();
-    $data->employee_id = $request->employee_id;
-    $data->employee_name = $request->employee_name; // এটা আছে তো?
-    $data->total_score = $request->total_score;
-    $data->save();
+    $validated = $request->validate([
+        'employee_id' => 'required|exists:employees_sub,id',
+        'employee_name' => 'required|string|max:255',
+        'total_score' => 'required|numeric',
+    ]);
 
-    return response()->json(['message' => 'Data saved successfully!']);
+    return EmployParformance::create($validated);
 }
+
 
 
 
