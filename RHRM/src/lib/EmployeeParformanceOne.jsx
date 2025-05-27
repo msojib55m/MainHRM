@@ -8,6 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import EmployeeParformanceTwo from "./EmployeeParformanceTwo";
+import axiosClient from "../axiosClient";
+
 const EmployeeParformanceOne = () => {
     const [showAddNew, setShowAddNew] = useState(false);
     // List Employ now
@@ -112,20 +114,169 @@ const EmployeeParformanceOne = () => {
 
     const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
     // spging add to submit
+
     const [loading, setLoading] = useState(false);
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setLoading(true);
+
+    //     // যদি employee না থাকে বা নাম না থাকে, তাহলে সাবমিট ব্লক করুন
+    //     if (!selectedEmployee || !selectedEmployee.name) {
+    //         alert("Please select a valid employee.");
+    //         setLoading(false);
+    //         return;
+    //     }
+
+    //     const selectedData = {
+    //         employee_id: parseInt(selectedEmployeeId),
+    //         employee_name: selectedEmployee?.name || "",
+    //         total_score: finalTotalScore,
+    //     };
+
+    //     console.log("Selected Data:", selectedData);
+
+    //     try {
+    //         const response = await axios.post(
+    //             "http://127.0.0.1:8000/api/EmployeePerformanceOne",
+    //             selectedData,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //             }
+    //         );
+
+    //         setShowAddNew(false); // modal hide
+    //         alert("Employee Performance submitted successfully!");
+    //     } catch (error) {
+    //         if (error.response) {
+    //             // Laravel validation বা অন্য সার্ভার error
+    //             console.error(
+    //                 "Server responded with error:",
+    //                 error.response.data
+    //             );
+    //             const errorMsg =
+    //                 error.response.data.message || "Validation error.";
+    //             alert("Error: " + errorMsg);
+    //         } else {
+    //             console.error("Request failed:", error.message);
+    //             alert("Request failed");
+    //         }
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+    const [search, setSearch] = useState("");
+    const ref = useRef();
+
+    // Filtered employees by search text (case insensitive)
+    const filteredEmployees = employees.filter((emp) =>
+        emp.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    // Close dropdown if clicked outside
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (ref.current && !ref.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // When user types, open dropdown
+    const handleInputChange = (e) => {
+        setSearch(e.target.value);
+        setIsOpen(true);
+    };
+
+    // When user selects an employee
+    const handleSelect = (employee) => {
+        setSearch(employee.name);
+        setIsOpen(false);
+        onSelect(employee); // pass selected employee object to parent
+    };
+    // নতুন করে কাজ করব
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setLoading(true);
+
+    //     if (!selectedEmployeeId || isNaN(parseInt(selectedEmployeeId))) {
+    //         alert("Please enter a valid Employee ID.");
+    //         setLoading(false);
+    //         return;
+    //     }
+
+    //     if (!selectedEmployee) {
+    //         alert("Please enter employee name.");
+    //         setLoading(false);
+    //         return;
+    //     }
+
+    //     const selectedData = {
+    //         employee_id: parseInt(selectedEmployeeId),
+    //         employee_name: selectedEmployee,
+    //         total_score: finalTotalScore, // এটা আপনি যেভাবে ক্যালকুলেট করছেন ধরে নিচ্ছি
+    //     };
+
+    //     console.log("Selected Data:", selectedData);
+
+    //     try {
+    //         const response = await axios.post(
+    //             "http://127.0.0.1:8000/api/EmployeePerformanceOne",
+    //             selectedData,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //             }
+    //         );
+
+    //         setShowAddNew(false);
+    //         alert("Employee Performance submitted successfully!");
+    //     } catch (error) {
+    //         if (error.response) {
+    //             console.error("Server error:", error.response.data);
+    //             const errorMsg =
+    //                 error.response.data.message || "Validation error.";
+    //             alert("Error: " + errorMsg);
+    //         } else {
+    //             console.error("Request failed:", error.message);
+    //             alert("Request failed");
+    //         }
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        if (!selectedEmployeeId || isNaN(parseInt(selectedEmployeeId))) {
+            alert("Please enter a valid Employee ID.");
+            setLoading(false);
+            return;
+        }
+
+        if (!selectedEmployee) {
+            alert("Please enter employee name.");
+            setLoading(false);
+            return;
+        }
+
         const selectedData = {
-            employee_id: selectedEmployeeId || null,
+            employee_id: parseInt(selectedEmployeeId),
             employee_name: selectedEmployee,
-            total_score: finalTotalScore,
+            total_score: finalTotalScore, // এটা আপনি যেভাবে ক্যালকুলেট করছেন ধরে নিচ্ছি
         };
-        console.log("Sending employee_id:", selectedEmployeeId);
-        console.log("Sending employee_name:", selectedEmployee);
+
+        console.log("Selected Data:", selectedData);
+
         try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/EmployeePerformanceOne",
+            const response = await axiosClient.post(
+                "/EmployeePerformanceOne",
                 selectedData,
                 {
                     headers: {
@@ -135,20 +286,19 @@ const EmployeeParformanceOne = () => {
             );
 
             setShowAddNew(false);
+            alert("Employee Performance submitted successfully!");
         } catch (error) {
             if (error.response) {
-                // Laravel validation or other server error
-                console.error(
-                    " Server responded with error:",
-                    error.response.data
-                );
-                alert(" " + error.response.data.message);
+                console.error("Server error:", error.response.data);
+                const errorMsg =
+                    error.response.data.message || "Validation error.";
+                alert("Error: " + errorMsg);
             } else {
-                console.error(" Request failed:", error.message);
-                alert(" Request failed");
+                console.error("Request failed:", error.message);
+                alert("Request failed");
             }
         } finally {
-            setLoading(true);
+            setLoading(false);
         }
     };
 
@@ -198,6 +348,7 @@ const EmployeeParformanceOne = () => {
                                         </div>
                                         <div>
                                             {/* Back to Employee Performance List Button */}
+
                                             <div
                                                 className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-700 flex items-center gap-2 cursor-pointer"
                                                 onClick={() =>
@@ -222,6 +373,7 @@ const EmployeeParformanceOne = () => {
                                             FORM
                                         </h3>
                                     </div>
+
                                     <div class="w-full text-center">
                                         <p class="text-lg mt-3 italic text-red-600">
                                             All fields are required except
@@ -229,64 +381,13 @@ const EmployeeParformanceOne = () => {
                                         </p>
                                     </div>
                                     <div className="flex items-center justify-between mt-8">
-                                        {/* Employee Dropdown */}
-                                        <div className="flex items-center">
-                                            <label className="font-medium text-gray-700">
-                                                Name of Employee:
-                                            </label>
-                                            <div
-                                                className="ml-4 relative"
-                                                ref={dropdownRef}
-                                            >
-                                                <input
-                                                    type="text"
-                                                    className="border border-gray-400 focus:border-green-500 focus:outline-none p-2 rounded w-64 cursor-pointer bg-white"
-                                                    placeholder="Select Employee"
-                                                    value={selectedEmployee}
-                                                    onClick={() =>
-                                                        setIsOpen(!isOpen)
-                                                    }
-                                                    readOnly
-                                                />
-                                                {isOpen && (
-                                                    <ul className="absolute left-0 w-full bg-white border border-gray-400 rounded mt-1 max-h-48 overflow-y-auto z-10 shadow-lg">
-                                                        {employees.map(
-                                                            (
-                                                                employee,
-                                                                index
-                                                            ) => (
-                                                                <li
-                                                                    key={index}
-                                                                    onClick={() => {
-                                                                        setSelectedEmployee(
-                                                                            employee.name
-                                                                        ); // name set করো
-                                                                        setSelectedEmployeeId(
-                                                                            employee.id
-                                                                        ); // id set করো
-                                                                        setIsOpen(
-                                                                            false
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    {
-                                                                        employee.name
-                                                                    }
-                                                                </li>
-                                                            )
-                                                        )}
-                                                    </ul>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {/* Review Period Input */}
-                                        {/* <div className="mb-4">
+                                        <div className="flex items-center ml-4">
                                             <label className="block text-gray-700 font-medium mb-2">
                                                 Employee ID:
                                             </label>
                                             <input
-                                                type="text"
-                                                className="border border-gray-400 p-2 rounded w-full focus:outline-none focus:border-green-500"
+                                                type="number"
+                                                className="border border-gray-300 focus:border-green-500 focus:outline-none p-2 rounded-md w-[300px] ml-4"
                                                 placeholder="Enter Employee ID"
                                                 value={selectedEmployeeId}
                                                 onChange={(e) =>
@@ -294,8 +395,28 @@ const EmployeeParformanceOne = () => {
                                                         e.target.value
                                                     )
                                                 }
+                                                required
                                             />
-                                        </div> */}
+                                        </div>
+
+                                        <div className="flex items-center ml-4">
+                                            <label className="block text-gray-700 font-medium mb-2">
+                                                Name of Employee:
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="border border-gray-300 focus:border-green-500 focus:outline-none p-2 rounded-md w-[300px] ml-4"
+                                                placeholder="Enter Employee Name"
+                                                value={selectedEmployee}
+                                                onChange={(e) =>
+                                                    setSelectedEmployee(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                required
+                                            />
+                                        </div>
+
                                         <div className="flex items-center ml-4">
                                             <label className="font-medium text-gray-700">
                                                 Review Period:
@@ -942,7 +1063,7 @@ const EmployeeParformanceOne = () => {
             </div>
             <div className="relative">
                 <div>
-                    <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ml-[10px]">
+                    <footer className="bg-[#fff] mt-[20px] h-[60px]  rounded-lg ">
                         <div className="flex items-center justify-between pr-[20px] pl-[20px]">
                             <div className="">
                                 <h1 className="mt-[20px]">

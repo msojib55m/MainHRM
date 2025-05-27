@@ -140,6 +140,20 @@ const MainEmployList = () => {
         entriesPerPage === -1
             ? filteredEmployees
             : filteredEmployees.slice(0, entriesPerPage);
+    const handleResetEmployees = async () => {
+        try {
+            const response = await axios.delete(
+                "http://127.0.0.1:8000/api/employees/reset"
+            );
+            alert(response.data.message);
+        } catch (error) {
+            alert(
+                "Error resetting employees: " +
+                    (error.response?.data?.message || error.message)
+            );
+        }
+    };
+
     return (
         <div className="mt-[20px] ml-[15px]">
             <div className="flex align-center justify-between">
@@ -199,6 +213,17 @@ const MainEmployList = () => {
                     </div>
                 </div>
                 {/* download now Excel and Csv */}
+                <div className="p-4">
+                    {/* Reset Button */}
+                    <button
+                        onClick={handleResetEmployees}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Reset All Employees
+                    </button>
+
+                    {/* এখানে টেবিল বা অন্যান্য UI থাকবে */}
+                </div>
             </div>
             <div className="mt-[20px]">
                 <table className="min-w-full table-auto border-collapse border border-gray-300">

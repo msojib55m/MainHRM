@@ -214,6 +214,7 @@ const EmployeeParformanceTwo = () => {
 
     // Slice the filteredPerformances based on selected entries per page
     const slicedPerformances = filteredPerformances.slice(0, entriesPerPage);
+
     return (
         <div>
             <div className="mt-[20px]">
@@ -280,6 +281,7 @@ const EmployeeParformanceTwo = () => {
                     </div>
                     {/* card three */}
                 </div>
+
                 <div className="overflow-x-auto mt-[20px]">
                     <table className="min-w-full table-auto border-collapse">
                         <thead>

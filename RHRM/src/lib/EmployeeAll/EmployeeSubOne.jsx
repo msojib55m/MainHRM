@@ -24,9 +24,7 @@ const EmployeeSubOne = () => {
             .catch((err) => console.error(err));
     }, []);
     // new
-    // const handleChange = (e) => {
-    //     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -40,20 +38,32 @@ const EmployeeSubOne = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        // Step 1: Check what data is being sent
+
+        // Step 1: Filter only necessary data for the API
+        const cleanedFormData = {
+            position_id: parseInt(formData.position_id),
+            name: formData.name,
+            email: formData.email,
+            mobile: formData.mobile,
+            dob: formData.dob,
+            designation: formData.designation,
+            joining_date: formData.joining_date,
+            confirm_joining: formData.confirm_joining,
+            status: formData.status,
+        };
 
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/employees",
-                formData
+                cleanedFormData
             );
 
-            // Step 2: See the response from backend
+            // Success alert or feedback
+            alert("Employee created successfully!");
 
-            // Step 3: Optional - reset form
+            // Step 2: Reset the form
             setFormData({
                 position_id: "",
-                employee_id: "",
                 name: "",
                 email: "",
                 mobile: "",
@@ -64,12 +74,13 @@ const EmployeeSubOne = () => {
                 status: "",
             });
         } catch (err) {
+            console.log(err.response?.data); // Show error details
             alert(
                 "Server error occurred: " +
                     (err.response?.data?.message || err.message)
             );
         } finally {
-            setLoading(false); //  Stop loading
+            setLoading(false); // Always stop loading
         }
     };
 
