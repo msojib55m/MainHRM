@@ -103,7 +103,8 @@ Route::post('/EmployeePerformanceOne', [EmployeePerformanceController::class, 's
 Route::get('/EmployeesPerformanceTwo', [EmployeePerformanceController::class, 'index']);
 Route::put('/update-performance/{id}', [EmployeePerformanceController::class, 'update']);
 Route::get('/EmployeCount', [EmployeePerformanceController::class, 'count']);
-
+Route::delete('delete-performance/{id}', [EmployeePerformanceController::class, 'destroy']);
+Route::get("/AllEmployName",[EmployeePerformanceController::class,"EmployName"]);
 // EmployeeController
 use App\Http\Controllers\EmployeeSubController;
 
@@ -117,7 +118,7 @@ Route::delete('/SubEmpolyDelete/{id}', [EmployeeSubController::class, 'destroy']
 
 // routes/api.php
 
-Route::delete('delete-performance/{id}', [EmployeePerformanceController::class, 'destroy']);
+
 
 
 // holiday send post
@@ -321,4 +322,14 @@ Route::delete('/currencies/{id}', [CurrencyController::class, 'destroy']);
 use App\Http\Controllers\MailSettingsController;
 Route::post('/update-mail-settings', [MailSettingsController::class, 'update']);
 
+
+// Attendance report controller now
+use App\Http\Controllers\AttendanceReportController;
+Route::get('/attendance_report_All', [AttendanceReportController::class, 'index']);
+
+Route::post('/attendance_report', [AttendanceReportController::class, 'store']);
+Route::put('/Allattendance_report_update/{id}', [AttendanceReportController::class, 'update']);
+// routes/api.php
+
+Route::delete('/Allattendance_report_delete/{id}', [AttendanceReportController::class, 'destroy']);
 

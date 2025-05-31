@@ -67,5 +67,10 @@ public function store(Request $request)
    {
        $count = EmployParformance::count(); // total row count
        return response()->json(['count' => $count]);
-   }
+   }public function EmployName()
+{
+    return response()->json(
+        EmployParformance::select('employee_name')->distinct()->pluck('employee_name')
+    );
+}
 }

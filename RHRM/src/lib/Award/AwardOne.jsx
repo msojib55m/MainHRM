@@ -121,7 +121,6 @@ const AwardOne = () => {
     const [deletingId, setDeletingId] = useState(null);
     const handleDelete = async (id) => {
         setDeletingId(id);
-        console.log(id);
         try {
             await axiosClient.delete(`/awardDelete/${id}`);
             fetchData();
