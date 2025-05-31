@@ -341,76 +341,82 @@ const AttendanceReportOne = () => {
                                         </td>
                                     </tr>
                                 ) : (
-                                    filteredData.map((item, index) => (
-                                        <tr
-                                            key={item.id}
-                                            className="hover:bg-gray-100"
-                                        >
-                                            <td className="text-center px-3 py-2 border-b">
-                                                {index + 1}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.employee_name}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.date}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.in_time}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.out_time}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                <button
-                                                    className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1"
-                                                    onClick={() =>
-                                                        allEdit(item)
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faEdit}
-                                                    />
-                                                </button>
-                                                <button
-                                                    className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1"
-                                                    onClick={() =>
-                                                        handleDelete(item.id)
-                                                    } // এখানে ঠিক আছে
-                                                    disabled={
-                                                        deletingId === item.id
-                                                    }
-                                                >
-                                                    {deletingId === item.id ? (
-                                                        <svg
-                                                            className="animate-spin h-4 w-4 text-red-600"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <circle
-                                                                className="opacity-25"
-                                                                cx="12"
-                                                                cy="12"
-                                                                r="10"
-                                                                stroke="currentColor"
-                                                                strokeWidth="4"
-                                                            ></circle>
-                                                            <path
-                                                                className="opacity-75"
-                                                                fill="currentColor"
-                                                                d="M4 12a8 8 0 018-8v8H4z"
-                                                            ></path>
-                                                        </svg>
-                                                    ) : (
+                                    filteredData
+                                        .slice(0, entriesPerPage)
+                                        .map((item, index) => (
+                                            <tr
+                                                key={item.id}
+                                                className="hover:bg-gray-100"
+                                            >
+                                                <td className="text-center px-3 py-2 border-b">
+                                                    {index + 1}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.employee_name}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.date}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.in_time}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.out_time}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    <button
+                                                        className="bg-blue-300 text-blue-600 hover:bg-blue-200 rounded-md p-2 text-sm mx-1"
+                                                        onClick={() =>
+                                                            allEdit(item)
+                                                        }
+                                                    >
                                                         <FontAwesomeIcon
-                                                            icon={faTrash}
+                                                            icon={faEdit}
                                                         />
-                                                    )}
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                                    </button>
+                                                    <button
+                                                        className="bg-red-300 text-red-600 hover:bg-red-200 rounded-md p-2 text-sm mx-1"
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                item.id
+                                                            )
+                                                        } // এখানে ঠিক আছে
+                                                        disabled={
+                                                            deletingId ===
+                                                            item.id
+                                                        }
+                                                    >
+                                                        {deletingId ===
+                                                        item.id ? (
+                                                            <svg
+                                                                className="animate-spin h-4 w-4 text-red-600"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8v8H4z"
+                                                                ></path>
+                                                            </svg>
+                                                        ) : (
+                                                            <FontAwesomeIcon
+                                                                icon={faTrash}
+                                                            />
+                                                        )}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
                                 )}
                             </tbody>
                         </table>
