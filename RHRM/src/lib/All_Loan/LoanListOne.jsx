@@ -13,6 +13,7 @@ import axios from "axios";
 import "../../index.css";
 import * as XLSX from "xlsx"; // Import xlsx
 import Papa from "papaparse"; // Import papaparse
+import axiosClient from "../../axiosClient";
 
 const LoanListOne = () => {
     // open Filter
@@ -42,14 +43,15 @@ const LoanListOne = () => {
     const [isLoading, setIsLoading] = useState(true);
     // number one
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/employees")
-            .then((res) => res.json())
-            .then((data) => {
-                setEmployees(Array.isArray(data) ? data : Object.values(data));
+        axiosClient
+            .get("/AllEmployName")
+            .then((response) => {
+                console.log("Fetched employees:", response.data);
+                setEmployees(response.data);
             })
-            .catch((error) =>
-                console.error("Error fetching employees:", error)
-            );
+            .catch((error) => {
+                console.error("Error fetching employees:", error);
+            });
     }, []);
     useEffect(() => {
         function handleClickOutside(event) {
@@ -75,17 +77,17 @@ const LoanListOne = () => {
 
     // open Loan List one
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/employeesAdd")
-            .then((res) => res.json())
-            .then((data) => {
-                setEmployeesAdd(
-                    Array.isArray(data) ? data : Object.values(data)
-                );
+        axiosClient
+            .get("/AllEmployName")
+            .then((response) => {
+                console.log("Fetched employees:", response.data);
+                setEmployeesAdd(response.data);
             })
-            .catch((error) =>
-                console.error("Error fetching employees:", error)
-            );
+            .catch((error) => {
+                console.error("Error fetching employees:", error);
+            });
     }, []);
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (
@@ -164,32 +166,57 @@ const LoanListOne = () => {
         setStatus(status);
         setIsInputActive(false); // Close dropdown after selecting status
     };
-    // new State End
+
+    const [loading, setLoading] = useState(false);
+    // error now show in input
+    const [errors, setErrors] = useState({});
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             // Send both form data and employee data to Laravel API
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/submit-loan",
-                {
-                    employee_one: selectedEmployeeAdd, // sending employee one data
-                    employee_two: selectedEmployeeAddTwo, // sending employee two data
-                    loan_details: loanDetails,
-                    amount: amount,
-                    approved_date: approvedDate,
-                    repayment_from: repaymentFrom,
-                    interest_percentage: interestPercentage,
-                    installment_period: installmentPeriod,
-                    repayment_amount: repaymentAmount,
-                    installment: installment,
-                    status: status,
-                }
-            );
-            alert(response.data.message); // Show success message from Laravel API response
-        } catch (error) {
-            console.error("Error submitting data", error);
+            const response = await axiosClient.post("/submit-loan", {
+                employee_one: selectedEmployeeAdd, // sending employee one data
+                employee_two: selectedEmployeeAddTwo, // sending employee two data
+                loan_details: loanDetails,
+                amount: amount,
+                approved_date: approvedDate,
+                repayment_from: repaymentFrom,
+                interest_percentage: interestPercentage,
+                installment_period: installmentPeriod,
+                repayment_amount: repaymentAmount,
+                installment: installment,
+                status: status,
+            });
+
+            fetchLoans();
+            resetForm();
+            setFilter(false);
+            setList(false);
+        } catch (err) {
+            const response = err.response;
+            if (response && response.status === 422) {
+                setErrors(response.data.errors);
+            }
+        } finally {
+            setLoading(false);
         }
     };
+    const resetForm = () => {
+        setSelectedEmployeeAdd(null);
+        setSelectedEmployeeAddTwo(null);
+        setLoanDetails("");
+        setAmount("");
+        setApprovedDate("");
+        setRepaymentFrom("");
+        setInterestPercentage("");
+        setInstallmentPeriod("");
+        setRepaymentAmount("");
+        setInstallment("");
+        setStatus("");
+        setErrors({});
+    };
+
     // new State now ডাটা পাঠানোর জন্য ব্যবহার করা শেষ
     // mysql এখন ডাটা আনা হচ্ছে
     const [loans, setLoans] = useState([]);
@@ -480,7 +507,16 @@ const LoanListOne = () => {
                                                             }
                                                         </div>
                                                     </div>
-
+                                                    {/* error show */}
+                                                    {errors.employee_one && (
+                                                        <p className="text-red-500 text-sm mt-1 ml-[162px]">
+                                                            {
+                                                                errors
+                                                                    .employee_one[0]
+                                                            }
+                                                        </p>
+                                                    )}
+                                                    {/* error show */}
                                                     {/* Dropdown */}
                                                     {openLoanList && (
                                                         <div className="absolute mt-2 w-[500px] bg-white border rounded-lg shadow-lg z-10 left-[125px]">
@@ -569,6 +605,14 @@ const LoanListOne = () => {
                                                             }
                                                         </div>
                                                     </div>
+                                                    {errors.employee_two && (
+                                                        <p className="text-red-500 text-sm mt-1 ml-[162px]">
+                                                            {
+                                                                errors
+                                                                    .employee_two[0]
+                                                            }
+                                                        </p>
+                                                    )}
                                                     {/* dorown two */}
                                                     {openLoanListTwo && (
                                                         <div className="absolute mt-2 w-[500px] bg-white border rounded-lg shadow-lg z-10 left-[125px]">
@@ -653,7 +697,7 @@ const LoanListOne = () => {
                                                     )}
                                                 </div>
                                             </div>
-
+                                            {/* three */}
                                             <div className="flex items-start gap-4">
                                                 <label className="w-40 font-medium">
                                                     Loan details
@@ -669,8 +713,13 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 ></textarea>
+                                                {errors.loan_details && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {errors.loan_details[0]}
+                                                    </p>
+                                                )}
                                             </div>
-
+                                            {/* four */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Amount*
@@ -687,8 +736,13 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.amount && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {errors.amount[0]}
+                                                    </p>
+                                                )}
                                             </div>
-
+                                            {/* five */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Approved date*
@@ -704,7 +758,16 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.approved_date && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {
+                                                            errors
+                                                                .approved_date[0]
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
+                                            {/* six */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Repayment from*
@@ -721,7 +784,16 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.repayment_from && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {
+                                                            errors
+                                                                .repayment_from[0]
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
+                                            {/* 7th */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Interest percentage(%)*
@@ -738,7 +810,16 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.interest_percentage && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {
+                                                            errors
+                                                                .interest_percentage[0]
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
+                                            {/* 8th */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Installment period*
@@ -755,7 +836,16 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.installment_period && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {
+                                                            errors
+                                                                .installment_period[0]
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
+                                            {/* 9th */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Repayment amount*
@@ -772,7 +862,16 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.repayment_amount && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {
+                                                            errors
+                                                                .repayment_amount[0]
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
+                                            {/* 10th */}
                                             <div className="flex items-center gap-4">
                                                 <label className="w-40 font-medium">
                                                     Installment*
@@ -789,6 +888,11 @@ const LoanListOne = () => {
                                                         )
                                                     }
                                                 />
+                                                {errors.installment && (
+                                                    <p className="text-red-500 text-sm mt-1">
+                                                        {errors.installment[0]}
+                                                    </p>
+                                                )}
                                             </div>
                                             {/* last */}
                                             <div className=" ">
@@ -867,8 +971,37 @@ const LoanListOne = () => {
                                                 Reset
                                             </button>
                                             {/* Save Button - Green */}
-                                            <button className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
-                                                Save
+                                            <button
+                                                className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                                                disabled={loading}
+                                            >
+                                                {loading ? (
+                                                    <div className="flex items-center">
+                                                        <svg
+                                                            className="animate-spin h-5 w-5 mr-2 text-white"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <circle
+                                                                className="opacity-25"
+                                                                cx="12"
+                                                                cy="12"
+                                                                r="10"
+                                                                stroke="currentColor"
+                                                                strokeWidth="4"
+                                                            ></circle>
+                                                            <path
+                                                                className="opacity-75"
+                                                                fill="currentColor"
+                                                                d="M4 12a8 8 0 018-8v8H4z"
+                                                            ></path>
+                                                        </svg>
+                                                        Processing...
+                                                    </div>
+                                                ) : (
+                                                    "Save"
+                                                )}
                                             </button>
                                         </div>
                                     </div>

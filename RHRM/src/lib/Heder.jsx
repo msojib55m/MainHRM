@@ -865,7 +865,6 @@ const Heder = () => {
                                                             : "hidden"
                                                     } pl-[20px]`}
                                                 >
-                                                    {" "}
                                                     {name}
                                                 </span>
                                             </div>
