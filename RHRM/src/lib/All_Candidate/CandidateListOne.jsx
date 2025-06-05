@@ -50,7 +50,13 @@ const CandidateListOne = () => {
     });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value, type, files } = e.target;
+
+        if (type === "file") {
+            setFormData({ ...formData, [name]: files[0] });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const handleNext = () => {
@@ -100,25 +106,75 @@ const CandidateListOne = () => {
     };
 
     // react to laravel and laravel to mysql store now
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const response = await axiosClient.post("/candidates", formData);
-            fetchProjects();
-            resetFormData();
-            setSubmitted(true);
-            alert("Form submitted successfully!");
-        } catch (err) {
-            const response = err.response;
-            if (response && response.status === 422) {
-                setErrors(response.data.errors);
-                console.log(response.data);
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const data = new FormData();
+
+    // Step 1
+    data.append("firstName", formData.firstName);
+    data.append("lastName", formData.lastName);
+    data.append("email", formData.email);
+    data.append("phone", formData.phone);
+    data.append("alternativePhone", formData.alternativePhone);
+    data.append("ssn", formData.ssn);
+    data.append("presentAddress", formData.presentAddress);
+    data.append("Permanentaddress", formData.Permanentaddress);
+    data.append("country", formData.country);
+    data.append("city", formData.city);
+    data.append("zipCode", formData.zipCode);
+    if (formData.picture) {
+        data.append("picture", formData.picture);
+    }
+
+    // Step 2
+    data.append("obtainedDegree", formData.obtainedDegree);
+    data.append("university", formData.university);
+    data.append("cgpa", formData.cgpa);
+    data.append("comments", formData.comments);
+
+    // Step 3 (যদি থাকে)
+    data.append("companyName", formData.companyName);
+    data.append("workingPeriod", formData.workingPeriod);
+    data.append("duties", formData.duties);
+    data.append("supervisor", formData.supervisor);
+
+    try {
+        const response = await axiosClient.post(
+            "/candidatesNameAll",
+            data,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             }
-        } finally {
-            setLoading(false);
+        );
+
+        fetchProjects();
+        resetFormData();
+        setSubmitted(true);
+        alert("Form submitted successfully!");
+    } catch (err) {
+        if (err.response) {
+            // Laravel validation বা অন্যান্য error
+            console.error("Server Error:", err.response.data);
+        } else if (err.request) {
+            // Request গেছে কিন্তু response আসেনি
+            console.error("No response from server:", err.request);
+        } else {
+            // অন্য কোনো error
+            console.error("Request setup error:", err.message);
         }
-    };
+
+        // পুরো error দেখুন
+        console.log("Full error:", err);
+    } finally {
+        setLoading(false);
+    }
+};
+
+
     // data
     const [candidates, setCandidates] = useState([]);
     const fetchProjects = async () => {
@@ -475,10 +531,10 @@ const CandidateListOne = () => {
                                             </label>
                                             <input
                                                 type="file"
-                                                className="border rounded px-3 py-2 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-300"
+                                                accept="image/*"
                                                 name="picture"
-                                                value={formData.picture}
-                                                onChange={handleChange}
+                                                onChange={handleChange} // এখানে আপনি ফাইল ধরবেন
+                                                className="border rounded px-3 py-2 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-300"
                                             />
                                         </div>
                                     </div>

@@ -253,7 +253,8 @@ Route::get('/candidates', [CandidateController::class, 'index']);
 Route::put('/candidates/{id}', [CandidateController::class, 'update']);
 Route::delete('CandidateId/{id}', [CandidateController::class, 'destroy']);
 Route::get('/candidateShort', [CandidateController::class, 'AllCandateShow']);
-
+Route::get('/recruitments', [CandidateController::class, 'AllImage']);
+Route::post('/candidatesNameAll', [CandidateController::class, 'store']);
 
 
 // CandidateShortList now
@@ -263,6 +264,7 @@ Route::post('/CandidateShortListPost', [CandidateControllerList::class, 'store']
 Route::delete('/deleteCandidate/{id}', [CandidateControllerList::class, 'destroy']);
 Route::get('/CandidateShortlist', [CandidateControllerList::class, 'Candidate']);
 Route::get('/CandidateShortlistJov', [CandidateControllerList::class, 'CandidateJov']);
+
 // interview
 use App\Http\Controllers\InterviewController;
 Route::post('/interviews', [InterviewController::class, 'store']);
@@ -332,4 +334,5 @@ Route::put('/Allattendance_report_update/{id}', [AttendanceReportController::cla
 // routes/api.php
 
 Route::delete('/Allattendance_report_delete/{id}', [AttendanceReportController::class, 'destroy']);
+
 

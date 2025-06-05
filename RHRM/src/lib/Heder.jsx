@@ -550,6 +550,17 @@ const Heder = () => {
     }, []);
     // Dashbord style
     const isActive = location.pathname === "/";
+    // Image
+    const [recruitments, setRecruitments] = useState([]);
+    useEffect(() => {
+        axiosClient
+            .get("/recruitments")
+            .then((res) => {
+                console.log("Recruitment Data from API:", res.data);
+                setRecruitments(res.data);
+            })
+            .catch((err) => console.error(err));
+    }, []);
     return (
         <>
             <Helmet>
@@ -1407,112 +1418,54 @@ const Heder = () => {
                             </div>
                             <div className="">
                                 <div className="flex justify-between items-center border-b px-4 py-3">
-                                    <div className="flex items-start gap-3">
-                                        <img
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJmL3hkxNFtGJ9M6s-D5zE7YW27R39-oAzw&s"
-                                            alt="recruitment image"
-                                            className="rounded-lg w-12 h-12"
-                                        />
-                                        <div>
-                                            <p className="mb-2 leading-tight text-lg font-semibold text-gray-900">
-                                                Maisha Lucy Zamora Gonzales
-                                            </p>
-                                            <p className="mb-2 leading-tight text-sm font-normal text-gray-600"></p>
-                                            <p className="mb-0 leading-tight text-sm font-medium text-gray-700">
-                                                Reason:
-                                            </p>
-                                        </div>
-                                        <div class="bg-green-100 w-24 rounded-lg p-1">
-                                            <p class="mb-0 text-sm font-semibold text-green-600 text-center">
-                                                Approved
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* 2  card*/}
-                                <div className="flex items-start gap-3 pr-[20px] pl-[16px] mt-[14px]">
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJmL3hkxNFtGJ9M6s-D5zE7YW27R39-oAzw&s"
-                                        alt="recruitment image"
-                                        className="rounded-lg w-12 h-12"
-                                    />
                                     <div>
-                                        <p className="mb-2 leading-tight text-lg font-semibold text-gray-900">
-                                            Maisha Lucy Zamora Gonzales
-                                        </p>
-                                        <p className="mb-2 leading-tight text-sm font-normal text-gray-600"></p>
-                                        <p className="mb-0 leading-tight text-sm font-medium text-gray-700">
-                                            Reason:
-                                        </p>
-                                    </div>
-                                    <div class="bg-green-100 w-24 rounded-lg p-1">
-                                        <p class="mb-0 text-sm font-semibold text-green-600 text-center">
-                                            Approved
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="mt-[20px] ">
-                                    <hr />
-                                </div>
-                                {/* 2 card */}
-                                {/* 3  card*/}
-                                <div className="flex items-start gap-3 pr-[20px] pl-[16px] mt-[14px]">
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJmL3hkxNFtGJ9M6s-D5zE7YW27R39-oAzw&s"
-                                        alt="recruitment image"
-                                        className="rounded-lg w-12 h-12"
-                                    />
-                                    <div>
-                                        <p className="mb-2 leading-tight text-lg font-semibold text-gray-900">
-                                            Maisha Lucy Zamora Gonzales
-                                        </p>
-                                        <p className="mb-2 leading-tight text-sm font-normal text-gray-600"></p>
-                                        <p className="mb-0 leading-tight text-sm font-medium text-gray-700">
-                                            Reason:
-                                        </p>
-                                    </div>
-                                    <div class="bg-green-100 w-24 rounded-lg p-1">
-                                        <p class="mb-0 text-sm font-semibold text-green-600 text-center">
-                                            Approved
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="mt-[20px] ">
-                                    <hr />
-                                </div>
-                                {/* 3 card */}
-                                {/* 4  card*/}
-                                <div className="flex items-start gap-3 pr-[20px] pl-[16px] mt-[14px]">
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJmL3hkxNFtGJ9M6s-D5zE7YW27R39-oAzw&s"
-                                        alt="recruitment image"
-                                        className="rounded-lg w-12 h-12"
-                                    />
-                                    <div>
-                                        <p className="mb-2 leading-tight text-lg font-semibold text-gray-900">
-                                            Maisha Lucy Zamora Gonzales
-                                        </p>
-                                        <p className="mb-2 leading-tight text-sm font-normal text-gray-600"></p>
-                                        <p className="mb-0 leading-tight text-sm font-medium text-gray-700">
-                                            Reason:
-                                        </p>
-                                    </div>
-                                    <div class="bg-green-100 w-24 rounded-lg p-1">
-                                        <p class="mb-0 text-sm font-semibold text-green-600 text-center">
-                                            Approved
-                                        </p>
+                                        {recruitments.length > 0 ? (
+                                            recruitments
+                                                .slice(0, 5)
+                                                .map((item) => (
+                                                    <div
+                                                        key={item.id}
+                                                        className="flex items-start gap-3 pr-[20px] pl-[16px] mt-[14px]"
+                                                    >
+                                                        <img
+                                                            src={`http://127.0.0.1:8000/${item.picture}`}
+                                                            alt="recruitment"
+                                                            className="rounded-lg w-12 h-12"
+                                                        />
+
+                                                        <div>
+                                                            <p className="mb-2 leading-tight text-lg font-semibold text-gray-900">
+                                                                {item.firstName}{" "}
+                                                                {item.lastName}
+                                                            </p>
+                                                            <p className="mb-2 leading-tight text-sm font-normal text-gray-600">
+                                                                {item.email}
+                                                            </p>
+                                                            <p className="mb-0 leading-tight text-sm font-medium text-gray-700">
+                                                                Reason:
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="bg-green-100 w-24 rounded-lg p-1">
+                                                            <p className="mb-0 text-sm font-semibold text-green-600 text-center">
+                                                                Approved
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                        ) : (
+                                            <p className="text-center text-gray-500 mt-4">
+                                                New recruitment found
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
-                                <div className="mt-[20px] ">
-                                    <hr />
-                                </div>
-                                {/* 4 card */}
                             </div>
 
                             <div class="py-3">
-                                <a
-                                    href=""
-                                    class="flex gap-1 items-center justify-center leading-[2rem] text-sm font-semibold text-green-600 md:text-center"
+                                <Link
+                                    to="/hr/recruitment"
+                                    className="flex gap-1 items-center justify-center leading-[2rem] text-sm font-semibold text-green-600 md:text-center"
                                 >
                                     See All Request
                                     <svg
@@ -1525,11 +1478,11 @@ const Heder = () => {
                                         <path
                                             d="M1 4H10M10 4L6.75 1M10 4L6.75 7"
                                             stroke="#00B074"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        ></path>
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
                                     </svg>
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
